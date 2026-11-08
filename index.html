@@ -1,0 +1,1057 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>WiseMan</title>
+<meta name="theme-color" content="#f4ecdc">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="favicon-32.png?v=1" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png?v=1">
+
+<style>
+:root{--ink:#1f1a16;--muted:#6e6157;--red:#80201a;--paper:#f4ecdc;--rule:#d6c8b0;--card:#f8f2e6;--tile:#e9dec8;--map:#efe4cf;
+ --serif:EdOld,Georgia,"Times New Roman",serif;--sans:Montreal,"Helvetica Neue",Arial,sans-serif;
+ --top:env(safe-area-inset-top,0px);--bot:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font:350 16px/1.45 var(--sans);-webkit-font-smoothing:antialiased;overscroll-behavior-y:none}
+button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+a{color:inherit}
+#app{max-width:560px;margin:0 auto;min-height:100vh;position:relative;padding-top:var(--top)}
+.scr{padding-bottom:calc(100px + var(--bot))}
+.scr.dec-open{padding-bottom:calc(170px + var(--bot))}
+img{display:block}
+.src{font:500 10.5px/1.35 var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:7px}
+.lab{font:500 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.muted{color:var(--muted)}
+.img{position:relative;overflow:hidden;background:var(--tile)}
+.img img{width:100%;height:100%;object-fit:cover;opacity:0;transition:opacity .3s}
+.img img.ok{opacity:1}
+.img::after{content:"";position:absolute;inset:0;background:var(--paper);mix-blend-mode:multiply;opacity:.16;pointer-events:none}
+.ty{background:var(--tile);display:flex;align-items:center;justify-content:center;font:400 30px var(--serif);color:var(--red)}
+.acts{display:flex;gap:7px;flex-wrap:wrap}
+.acts button{font:500 12.5px var(--sans);border:1px solid var(--ink);border-radius:999px;padding:8px 12px;white-space:nowrap}
+.acts button.k{background:var(--ink);color:var(--paper)}
+.acts button.sug{border-color:var(--red);color:var(--red)}
+.head{padding:14px 20px 14px}
+.head h1{font:400 40px/1 var(--serif);margin:0 0 8px;letter-spacing:-.01em}
+.head p{font:350 15px/1.45 var(--sans);color:var(--muted);margin:0}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;font:500 14px var(--sans);position:sticky;top:0;background:var(--paper);z-index:5}
+.nav span:last-child{color:var(--muted);font-size:13px}
+.empty{padding:30px 24px;text-align:center;color:var(--muted);font:350 15px/1.5 var(--sans)}
+.empty b{display:block;font:400 22px/1.2 var(--serif);color:var(--ink);margin-bottom:6px;font-weight:400}
+.vow{display:flex;gap:10px;align-items:center;justify-content:center;padding:22px 20px;font:400 17px var(--serif);color:var(--muted);text-align:left}
+.vow img{width:26px;height:26px;transform:rotate(-8deg);flex:none}
+.sealmark{display:inline-flex;align-items:center;gap:6px;font:500 10.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--red)}
+.sealmark img{width:22px;height:22px;transform:rotate(-8deg)}
+
+/* tab */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--paper);border-top:1px solid var(--ink);padding-bottom:var(--bot)}
+.tabs div{max-width:560px;margin:0 auto;display:flex;height:62px}
+.tabs a{flex:1;text-align:center;padding-top:16px;font:500 11.5px var(--sans);color:var(--muted);text-decoration:none;position:relative}
+.tabs a.on{color:var(--ink)}
+.tabs a.on::before{content:"";position:absolute;top:-1px;left:22%;right:22%;height:3px;background:var(--red)}
+.tabs b{font:500 10px var(--sans);background:var(--red);color:var(--paper);border-radius:9px;padding:1px 5px 2px;margin-left:3px;vertical-align:1px}
+
+/* edizione */
+.bar{display:flex;align-items:center;gap:10px;padding:14px 18px 12px;border-bottom:1px solid var(--ink)}
+.bar img{width:34px;height:34px;transform:rotate(-6deg)}
+.bar .mast{flex:1;font:400 30px var(--serif);letter-spacing:-.01em}
+.bar .meta{font:500 10px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;text-align:right;color:var(--muted)}
+.kick{padding:12px 18px 13px;font:500 12px var(--sans);letter-spacing:.06em;color:var(--red);text-transform:uppercase}
+.hero .img{aspect-ratio:4/3.5;margin-bottom:15px}
+.hero .tx{padding:0 18px;position:relative}
+.hero h2{font:400 34px/1.03 var(--serif);margin:0 0 10px;letter-spacing:-.01em}
+.stand{font:350 16px/1.5 var(--sans);margin:0 0 10px}
+.wm{font:350 13.5px/1.45 var(--sans);color:var(--muted);margin:0 0 15px;padding-left:10px;border-left:2px solid var(--red)}
+.wm i{font-style:normal;font-weight:500;color:var(--ink)}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:20px 18px 0;border-top:1px solid var(--rule);margin-top:22px}
+.duo .img{aspect-ratio:4/5;border-radius:6px;margin-bottom:9px}
+.duo h3{font:400 20px/1.1 var(--serif);margin:0}
+.brevi{margin:24px 18px 0;border-top:1px solid var(--ink);padding-top:12px}
+.brevi h4{margin:0 0 2px;font:500 11px var(--sans);letter-spacing:.14em;text-transform:uppercase}
+.row{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--rule)}
+.row .t{width:64px;height:64px;flex:none;border-radius:6px;overflow:hidden}
+.row h3{font:400 19px/1.12 var(--serif);margin:0}
+.row .src{margin-bottom:4px;font-size:9.5px}
+.row .note{font:350 12.5px var(--sans);color:var(--muted);margin-top:4px}
+
+/* pezzo */
+.p .img{aspect-ratio:4/3;margin:0 0 16px}
+.p .img img{object-position:50% 0}
+.art{padding:0 20px}
+.art h1{font:400 36px/1.02 var(--serif);margin:0 0 14px;letter-spacing:-.01em}
+.pts{margin:0 0 16px;padding:0;list-style:none;counter-reset:p}
+.pts li{counter-increment:p;display:flex;gap:12px;font:350 15.5px/1.45 var(--sans);padding:9px 0;border-top:1px solid var(--rule)}
+.pts li::before{content:counter(p);font:400 22px/1 var(--serif);color:var(--red);min-width:14px;padding-top:1px}
+.why2{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 14px;font:350 14.5px/1.45 var(--sans);margin-bottom:14px}
+.why2 .lab{color:var(--red);display:block;margin-bottom:5px}
+.why2 p{margin:6px 0 0}
+.links{display:flex;gap:18px;margin:4px 0 18px;font:500 14px var(--sans)}
+.links button,.links a{text-decoration:underline;text-underline-offset:3px}
+.md{font:350 15.5px/1.55 var(--sans);border-top:1px solid var(--ink);padding-top:6px}
+.md h2,.md h3{font:400 23px/1.15 var(--serif);margin:22px 0 8px}
+.md h4{font:500 15px var(--sans);margin:18px 0 6px}
+.md p{margin:0 0 12px}
+.md ul,.md ol{margin:0 0 12px;padding-left:20px}
+.md li{margin:3px 0}
+.md pre{background:var(--card);border:1px solid var(--rule);border-radius:8px;padding:12px;overflow:auto;font:13px/1.45 ui-monospace,Menlo,monospace;white-space:pre-wrap}
+.md code{font:13px ui-monospace,Menlo,monospace;background:var(--card);padding:1px 4px;border-radius:4px}
+.md pre code{background:none;padding:0}
+.md table{border-collapse:collapse;width:100%;font-size:14px;margin:0 0 14px;display:block;overflow:auto}
+.md td,.md th{border-bottom:1px solid var(--rule);padding:7px 8px 7px 0;text-align:left;vertical-align:top}
+.md th{font-weight:500}
+.md hr{border:0;border-top:1px solid var(--rule);margin:18px 0}
+.md blockquote{margin:0 0 12px;padding-left:12px;border-left:2px solid var(--red);color:var(--muted)}
+.md .wl{border-bottom:1px dotted var(--muted)}
+.decbar{position:fixed;left:0;right:0;bottom:0;z-index:21;background:var(--paper);border-top:1px solid var(--ink);padding:12px 14px calc(16px + var(--bot))}
+.decbar>div{max-width:532px;margin:0 auto}
+.decbar textarea{width:100%;border:1px solid var(--rule);border-radius:10px;padding:10px 13px;font:350 15px/1.35 var(--sans);color:var(--ink);background:var(--card);margin-bottom:22px;resize:none;height:44px;display:block}
+.decbar textarea:focus{outline:1.5px solid var(--red);height:76px}
+.row4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.row4 button{text-align:center;font:500 13px var(--sans);border:1px solid var(--ink);border-radius:999px;padding:11px 0;position:relative}
+.row4 button.sug{border:1.5px solid var(--red);color:var(--red)}
+.row4 button.sug::after{content:"consigliato";position:absolute;top:-17px;left:0;right:0;font:500 9.5px var(--sans);letter-spacing:.08em;text-transform:uppercase;color:var(--red)}
+.sealed{margin:8px 0 0;background:var(--card);border:1px solid var(--rule);border-radius:12px;padding:16px 16px 4px;position:relative}
+.sealed .stamp{position:absolute;width:118px;height:118px;top:-30px;right:-14px;transform:rotate(-11deg)}
+.sealed .ok{font:500 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.sealed.drop{border-style:dashed}
+.sealed.drop .ok{color:var(--muted)}
+.dl div{display:flex;justify-content:space-between;gap:16px;padding:10px 2px;border-bottom:1px solid var(--rule);font:350 14px/1.35 var(--sans)}
+.dl div:last-child{border-bottom:0}
+.dl div span:first-child{color:var(--muted);flex:none}
+.dl div span:last-child{text-align:right}
+.next{margin:16px 0 0;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border:1px solid var(--ink);border-radius:12px;width:100%;text-align:left}
+.next h4{font:400 19.5px/1.1 var(--serif);margin:3px 0 0}
+.next .arr{font:400 22px var(--sans)}
+
+/* sigillo che cade */
+.stamp{pointer-events:none}
+.drop-in{animation:stampIn .32s cubic-bezier(.2,1.4,.4,1) both}
+@keyframes stampIn{0%{opacity:0;transform:scale(2.2) rotate(-28deg)}70%{opacity:1;transform:scale(.94) rotate(-9deg)}100%{opacity:1;transform:scale(1) rotate(-11deg)}}
+.thud{animation:thud .28s ease-out .22s}
+@keyframes thud{0%{transform:translateY(0)}35%{transform:translateY(3px)}100%{transform:translateY(0)}}
+.flystamp{position:fixed;width:120px;height:120px;z-index:60;pointer-events:none}
+
+/* foglio Costruisci */
+.dim{position:fixed;inset:0;background:rgba(31,26,22,.48);z-index:40;animation:fade .2s}
+@keyframes fade{from{opacity:0}}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:41;max-height:92vh;overflow:auto;background:var(--paper);border-radius:24px 24px 0 0;padding:10px 20px calc(20px + var(--bot));animation:up .25s cubic-bezier(.2,.9,.3,1)}
+.sheet>div{max-width:520px;margin:0 auto}
+@keyframes up{from{transform:translateY(40%);opacity:.4}}
+.handle{width:40px;height:4px;border-radius:2px;background:var(--rule);margin:0 auto 14px}
+.sheet h2{font:400 32px/1 var(--serif);margin:0 0 6px}
+.sheet .sub{font:350 14.5px/1.4 var(--sans);color:var(--muted);margin:0 0 16px}
+.sheet .lab{margin:0 0 8px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--rule);width:100%;text-align:left}
+.opt .r{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--ink);flex:none;margin-top:2px;position:relative}
+.opt.on .r::after{content:"";position:absolute;inset:4px;border-radius:50%;background:var(--red)}
+.opt h4{font:400 19.5px/1.1 var(--serif);margin:0 0 3px}
+.opt p{font:350 13px/1.35 var(--sans);color:var(--muted);margin:0}
+.opt p em{font-style:normal;color:var(--red)}
+.opts{border-bottom:1px solid var(--rule);margin-bottom:16px}
+.field{width:100%;border:1px solid var(--rule);background:var(--card);border-radius:10px;padding:11px 13px;font:350 15px/1.4 var(--sans);color:var(--ink);margin:0 0 16px;display:block;resize:none}
+.field:focus{outline:1.5px solid var(--red)}
+.chips{display:flex;gap:7px;margin:0 0 18px;flex-wrap:wrap}
+.chips button{font:500 13px var(--sans);border:1px solid var(--ink);border-radius:999px;padding:8px 13px}
+.chips button.on{background:var(--ink);color:var(--paper)}
+.big{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--ink);color:var(--paper);border-radius:999px;height:54px;font:500 16px var(--sans);width:100%}
+.big img{width:30px;height:30px;transform:rotate(-8deg)}
+
+/* toast */
+.toast{position:fixed;left:14px;right:14px;bottom:calc(76px + var(--bot));z-index:50;max-width:532px;margin:0 auto;background:var(--ink);color:var(--paper);border-radius:14px;padding:15px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;font:350 14px/1.3 var(--sans);animation:up .25s}
+.toast button{font-weight:500;text-decoration:underline;text-underline-offset:3px;color:var(--paper);flex:none}
+.toast img{width:22px;height:22px;margin-right:9px;vertical-align:-6px;display:inline-block}
+
+/* anticamera */
+.one{margin:0 20px 6px;display:flex;justify-content:space-between;align-items:center;padding:13px 16px;border-radius:999px;background:var(--ink);color:var(--paper);font:500 14.5px var(--sans);width:calc(100% - 40px)}
+.grp{padding:18px 20px 2px}
+.grp .lab b{color:var(--red);font-weight:500}
+.it-wrap{position:relative;overflow:hidden;border-bottom:1px solid var(--rule)}
+.it{display:flex;gap:12px;align-items:center;padding:10px 20px;background:var(--paper);position:relative;transition:transform .2s;touch-action:pan-y}
+.it.drag{transition:none}
+.it .t{width:58px;height:58px;flex:none;border-radius:6px;overflow:hidden}
+.it h3{font:400 19px/1.1 var(--serif);margin:0}
+.it .src{margin-bottom:4px;font-size:9.5px}
+.it .note{font:350 12.5px var(--sans);color:var(--muted);margin-top:4px}
+.behind{position:absolute;top:0;bottom:0;right:0;display:flex;width:148px;visibility:hidden}
+.it-wrap.sw .behind{visibility:visible}
+.behind button{flex:1;font:500 13px var(--sans);color:var(--paper)}
+.behind button:first-child{background:var(--ink)}
+.behind button:last-child{background:var(--red)}
+.it.decided{opacity:.55}
+
+/* cantieri */
+.cant{margin:0 16px 12px;border:1px solid var(--rule);background:var(--card);border-radius:12px;padding:15px 16px}
+.cant.due{border:1.5px solid var(--red)}
+.cant .lab{margin-bottom:6px}
+.cant.due .lab{color:var(--red)}
+.cant h3{font:400 25px/1.05 var(--serif);margin:0 0 4px}
+.cant .m{font:350 13px/1.4 var(--sans);color:var(--muted);margin:0 0 10px}
+.cant .m a{text-decoration:none;border-bottom:1px solid var(--rule)}
+.cant .q{font:350 15px/1.45 var(--sans);margin:0 0 12px}
+.cant .q b{font-weight:500}
+.dots{display:flex;gap:6px;align-items:center;margin:2px 0 10px;flex-wrap:wrap}
+.dots i{width:24px;height:24px;border-radius:50%;border:1px solid var(--rule)}
+.dots i.d{background:var(--red);border-color:var(--red)}
+.dots i.t{border:1.5px dashed var(--ink)}
+.dots i.t.d{border-style:solid}
+.cant .rw{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cant .rw span{font:350 13px var(--sans);color:var(--muted)}
+.pill{font:500 13px var(--sans);border:1px solid var(--ink);border-radius:999px;padding:8px 13px;white-space:nowrap}
+.pill.k{background:var(--ink);color:var(--paper)}
+.closed{margin:6px 16px 0}
+
+/* contesto */
+.map{margin:0 16px;border:1px solid var(--ink);border-radius:4px;overflow:hidden;background:var(--map)}
+.map svg{display:block;width:100%;height:auto}
+.ctx{margin:12px 20px 0}
+.ci{display:flex;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--rule);width:100%;text-align:left}
+.ci .n{width:22px;height:22px;border-radius:50%;background:var(--red);color:var(--paper);font:500 11px/22px var(--sans);text-align:center;flex:none}
+.ci h4{font:400 18.5px/1.1 var(--serif);margin:0}
+.ci p{font:350 12.5px var(--sans);color:var(--muted);margin:2px 0 0}
+
+/* archivio */
+.search{margin:0 16px 12px;display:flex;gap:10px;align-items:center;border:1px solid var(--rule);background:var(--card);border-radius:12px;padding:0 14px}
+.search input{flex:1;border:0;background:none;font:350 15px var(--sans);color:var(--ink);padding:12px 0;outline:none;min-width:0}
+.fil{display:flex;gap:6px;padding:0 16px 6px;overflow-x:auto;white-space:nowrap;scrollbar-width:none}
+.fil::-webkit-scrollbar{display:none}
+.fil button{font:500 12.5px var(--sans);border:1px solid var(--rule);border-radius:999px;padding:7px 11px;color:var(--muted);flex:none}
+.fil button.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.ar{display:flex;gap:12px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--rule);width:100%;text-align:left}
+.ar img{width:24px;height:24px;flex:none;transform:rotate(-8deg)}
+.ar .x{width:24px;flex:none;text-align:center;color:var(--muted);font:400 18px var(--serif)}
+.ar div{flex:1;min-width:0}
+.ar h4{font:400 19px/1.1 var(--serif);margin:0}
+.ar p{font:350 12.5px var(--sans);color:var(--muted);margin:3px 0 0}
+.ar .d{font:500 10px var(--sans);letter-spacing:.1em;text-transform:uppercase;color:var(--red);flex:none;align-self:flex-start;margin-top:4px}
+
+.setup{position:fixed;inset:0;background:var(--paper);z-index:9999;padding:60px 24px;display:flex;flex-direction:column;gap:14px;max-width:420px;margin:0 auto}
+.setup h1{font:400 44px var(--serif);margin:0}
+.setup input{display:block;width:100%;margin-top:6px;border:1px solid var(--rule);background:var(--card);border-radius:10px;padding:11px 13px;font:350 15px var(--sans)}
+.setup label{font:500 13px var(--sans)}
+.err{padding:60px 24px;text-align:center}
+.err h1{font:400 32px var(--serif)}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<nav class="tabs" id="tabs" hidden><div></div></nav>
+<script>
+// WiseMan: i dati stanno nel repository privato GR1S0/wiseman-data, letto e scritto con l'API di GitHub.
+// Il Mac scrive indice.json, testi.json, schede/, img/, edizioni/. L'app scrive solo decisioni/<id>.json (un file
+// nuovo per decisione, mai riscritto) e cantieri.json. Copia locale in IndexedDB: l'app si apre subito e offline.
+window.WM = (() => {
+  const CFG_KEY = 'wm-gh';
+  let cfg = null;
+  const api = () => (cfg && cfg.api) || 'https://api.github.com'; // cfg.api solo per le prove in locale
+
+  /* ---------- IndexedDB minimo ---------- */
+  let dbp = null;
+  const idbOpen = () => dbp || (dbp = new Promise((res, rej) => {
+    const r = indexedDB.open('wiseman', 1);
+    r.onupgradeneeded = () => r.result.createObjectStore('kv');
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+  }));
+  const idb = (mode, fn) => idbOpen().then(db => new Promise((res, rej) => {
+    const t = db.transaction('kv', mode); const req = fn(t.objectStore('kv'));
+    t.oncomplete = () => res(req && req.result); t.onerror = () => rej(t.error);
+  }));
+  const get = k => idb('readonly', s => s.get(k)).catch(() => undefined);
+  const set = (k, v) => idb('readwrite', s => s.put(v, k)).catch(() => {});
+
+  /* ---------- GitHub ---------- */
+  const fail = (code, status) => Object.assign(new Error(code), {code, status});
+  const b64enc = str => { const b = new TextEncoder().encode(str); let s = ''; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s); };
+  const b64dec = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64.replace(/\s/g, '')), c => c.charCodeAt(0)));
+  async function gh(path, opt = {}) {
+    let r;
+    try {
+      r = await fetch(`${api()}/repos/${cfg.repo}/${path}`, Object.assign({cache: 'no-store'}, opt, {headers: Object.assign({
+        Authorization: `Bearer ${cfg.token}`, Accept: 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28'}, opt.headers || {})}));
+    } catch (e) { throw fail('offline'); }
+    if (r.status === 401 || r.status === 403) throw fail('auth', r.status);
+    return r;
+  }
+  const raw = path => gh('contents/' + path, {headers: {Accept: 'application/vnd.github.raw'}});
+  async function rawJson(path, dflt) {
+    const r = await raw(path);
+    if (r.status === 404) return dflt;
+    if (!r.ok) throw fail('net', r.status);
+    return r.json();
+  }
+  async function list(dir) {
+    const r = await gh('contents/' + dir);
+    if (r.status === 404) return [];
+    if (!r.ok) throw fail('net', r.status);
+    const j = await r.json(); return Array.isArray(j) ? j.filter(f => f.type === 'file' && f.name.endsWith('.json')) : [];
+  }
+  async function getWithSha(path) {
+    const r = await gh('contents/' + path);
+    if (r.status === 404) return {sha: null, data: null};
+    if (!r.ok) throw fail('net', r.status);
+    const j = await r.json();
+    return {sha: j.sha, data: JSON.parse(b64dec(j.content))};
+  }
+  async function put(path, data, sha, message) {
+    const body = {message: message || `wiseman: ${path}`, content: b64enc(JSON.stringify(data, null, 1))};
+    if (sha) body.sha = sha;
+    const r = await gh('contents/' + path, {method: 'PUT', body: JSON.stringify(body), headers: {'Content-Type': 'application/json'}});
+    if (r.status === 409 || r.status === 422) throw fail('conflict', r.status);
+    if (!r.ok) throw fail('net', r.status);
+    return (await r.json()).content.sha;
+  }
+
+  /* ---------- stato ---------- */
+  // st: indice (schede), testi, edizione (l'ultima), decisioni (id -> decisione già su GitHub), cantieri (+sha)
+  let st = {indice: {schede: {}}, testi: {}, edizione: null, decisioni: {}, cantieri: {}, cantSha: null, pulled: 0};
+  let outbox = []; // decisioni non ancora partite: {id, d, after}
+  const listeners = new Set();
+  const emit = () => listeners.forEach(f => { try { f(); } catch (e) { console.error(e); } });
+
+  async function pull() {
+    const [indice, testi, eds, decs, cant] = await Promise.all([
+      rawJson('indice.json', {schede: {}}), rawJson('testi.json', {}), list('edizioni'), list('decisioni'), getWithSha('cantieri.json')]);
+    const last = eds.map(f => f.name).sort().pop();
+    const edizione = last ? (st.edizione && st.edizione._file === last && st.edizione._sha === eds.find(f => f.name === last).sha
+      ? st.edizione : Object.assign(await rawJson('edizioni/' + last, null) || {}, {_file: last, _sha: eds.find(f => f.name === last).sha})) : null;
+    // decisioni già mandate ma non ancora applicate dal Mac
+    const decisioni = {};
+    for (const f of decs) {
+      const id = f.name.slice(0, -5), c = indice.schede[id];
+      if (!c || c.stato !== 'anticamera') continue;
+      decisioni[id] = (st.decisioni[id] && st.decisioni[id]._sha === f.sha) ? st.decisioni[id] : Object.assign(await rawJson('decisioni/' + f.name, {}), {_sha: f.sha});
+    }
+    st = Object.assign(st, {indice, testi, edizione, decisioni, cantieri: (cant.data && cant.data.cantieri) || {}, cantSha: cant.sha, pulled: Date.now()});
+    await set('st', st);
+    emit();
+  }
+
+  /* ---------- decisioni ---------- */
+  // Una decisione resta 10 secondi in uscita (si può annullare), poi diventa decisioni/<id>.json.
+  const UNDO_MS = 10000;
+  async function flush() {
+    const due = outbox.filter(o => o.after <= Date.now());
+    for (const o of due) {
+      try {
+        const cur = await getWithSha('decisioni/' + o.id + '.json');
+        await put('decisioni/' + o.id + '.json', o.d, cur.sha, `decisione: ${o.d.decisione} ${o.id}`);
+        st.decisioni[o.id] = o.d;
+        if (o.cantiere) await saveCantiere(o.cantiere);
+        outbox = outbox.filter(x => x !== o);
+        await set('outbox', outbox); await set('st', st);
+      } catch (e) {
+        if (e.code === 'auth') { fatal(e); return; }
+        return; // offline: riprovo al prossimo giro
+      }
+    }
+    if (due.length) emit();
+  }
+  function decide(id, d, cantiere) {
+    d = Object.assign({quando: new Date().toISOString()}, d);
+    outbox = outbox.filter(o => o.id !== id).concat({id, d, cantiere, after: Date.now() + UNDO_MS});
+    set('outbox', outbox); emit();
+    setTimeout(flush, UNDO_MS + 200);
+  }
+  function undo(id) { outbox = outbox.filter(o => o.id !== id); set('outbox', outbox); emit(); }
+  // la decisione di una scheda: in uscita, su GitHub, o già applicata dal Mac (indice)
+  function decisione(id) {
+    const o = outbox.find(x => x.id === id); if (o) return Object.assign({pending: true}, o.d);
+    const c = st.indice.schede[id];
+    if (c && c.stato !== 'anticamera') return Object.assign({applied: true}, c.decisione || {decisione: c.stato === 'scartata' ? 'scarta' : 'tieni'});
+    return st.decisioni[id] || null;
+  }
+
+  /* ---------- cantieri: un documento per cantiere, vince la modifica più recente ---------- */
+  async function saveCantiere(c) {
+    c = Object.assign({}, c, {m: Date.now()});
+    st.cantieri[c.id] = c; emit();
+    for (let tries = 0; tries < 4; tries++) {
+      try {
+        const cur = await getWithSha('cantieri.json');
+        const all = (cur.data && cur.data.cantieri) || {};
+        if (!all[c.id] || (all[c.id].m || 0) <= c.m) all[c.id] = c;
+        st.cantSha = await put('cantieri.json', {cantieri: all}, cur.sha, `cantiere: ${c.nome}`);
+        st.cantieri = all; await set('st', st); emit();
+        return;
+      } catch (e) {
+        if (e.code === 'conflict') continue;
+        if (e.code === 'auth') return fatal(e);
+        pendingCant.set(c.id, c); return; // offline: riparte al prossimo giro
+      }
+    }
+  }
+  const pendingCant = new Map();
+
+  /* ---------- immagini e note, con copia locale ---------- */
+  const urls = {};
+  async function img(id) {
+    if (urls[id]) return urls[id];
+    let blob = await get('img:' + id);
+    if (!blob) {
+      const r = await raw('img/' + id + '.jpg'); if (!r.ok) return null;
+      blob = await r.blob(); set('img:' + id, blob);
+    }
+    return (urls[id] = URL.createObjectURL(blob));
+  }
+  async function note(id) {
+    let md = await get('note:' + id);
+    if (md == null) {
+      const r = await raw('schede/' + id + '.md'); if (!r.ok) throw fail('net', r.status);
+      md = await r.text(); set('note:' + id, md);
+    }
+    return md;
+  }
+
+  /* ---------- font: nel repository privato, mai nella pagina pubblica ---------- */
+  async function loadFonts() {
+    let faces = await get('fonts');
+    if (!faces) {
+      const r = await raw('fonts/fonts.json'); if (!r.ok) return;
+      const listF = await r.json(); faces = [];
+      for (const f of listF) {
+        const b = await raw('fonts/' + f.file);
+        if (b.ok) faces.push(Object.assign({}, f, {buf: await b.arrayBuffer()}));
+      }
+      set('fonts', faces);
+    }
+    for (const f of faces) { const ff = new FontFace(f.family, f.buf, {weight: f.weight, style: f.style || 'normal', display: 'swap'}); await ff.load(); document.fonts.add(ff); }
+    document.documentElement.classList.add('fonts');
+  }
+
+  /* ---------- avvio ---------- */
+  let fatalFn = () => {};
+  const fatal = e => fatalFn(e);
+  async function start(onFatal) {
+    fatalFn = onFatal || fatalFn;
+    try { cfg = JSON.parse(localStorage.getItem(CFG_KEY)) || null; } catch (e) { cfg = null; }
+    if (!cfg) cfg = await window.WM_LOCK(); // schermata del codice (lock.js)
+    if (!cfg) return false;
+    const saved = await get('st'); if (saved) st = Object.assign(st, saved);
+    outbox = (await get('outbox')) || [];
+    emit();
+    loadFonts().catch(() => {});
+    const again = () => { if (document.visibilityState === 'visible') pull().then(flush).catch(e => { if (e.code === 'auth') fatal(e); }); };
+    try { await pull(); } catch (e) { if (e.code === 'auth' || !saved) { fatal(e); } }
+    flush();
+    document.addEventListener('visibilitychange', again);
+    addEventListener('online', again);
+    setInterval(again, 60000);
+    setInterval(() => { flush(); for (const c of pendingCant.values()) { pendingCant.delete(c.id); saveCantiere(c); } }, 3000);
+    return true;
+  }
+  function forget() { localStorage.removeItem(CFG_KEY); }
+
+  return {CFG_KEY, start, pull, on: f => (listeners.add(f), () => listeners.delete(f)), get state() { return st; },
+    decide, undo, decisione, saveCantiere, img, note, forget, UNDO_MS};
+})();
+</script>
+<script>
+// Accesso con codice di 8 cifre, come BodyTemple e SideQuest: accesso.json (scritto da app/cifra.mjs) contiene
+// repository e chiave GitHub cifrati (AES-GCM); la chiave che li apre è cifrata col codice (PBKDF2, 600 000 giri).
+// Dopo il primo sblocco il dispositivo sceglie: impronta / Face ID, senza codice, o il codice ogni volta.
+window.WM_LOCK = (() => {
+  async function lockScreen() {
+    let lock = null;
+    try { const r = await fetch('accesso.json', {cache: 'no-store'}); if (r.ok) lock = await r.json(); } catch (e) {}
+    if (!lock) return null; // nessun codice impostato: resta la schermata per incollare la chiave (BT_SETUP)
+    const n = lock.length || 8;
+    const enc = new TextEncoder(), PRF_INPUT = enc.encode('WiseMan sblocco v1');
+    const unb64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+    const b64 = u => btoa(String.fromCharCode(...new Uint8Array(u)));
+    const rand = k => crypto.getRandomValues(new Uint8Array(k));
+    const aes = (raw, use) => crypto.subtle.importKey('raw', raw, 'AES-GCM', false, use);
+    const ls = {get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch (e) { return null; } },
+                set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+                del(k) { try { localStorage.removeItem(k); } catch (e) {} }};
+
+    const el = document.createElement('div');
+    el.id = 'wm-lock';
+    el.innerHTML = `<style>
+      #wm-lock{position:fixed;inset:0;z-index:9999;overflow:auto;background:var(--paper);color:var(--ink);display:grid;place-items:center;font:350 16px/1.45 Montreal,"Helvetica Neue",Arial,sans-serif;
+        padding:max(24px,env(safe-area-inset-top)) max(20px,env(safe-area-inset-right)) max(24px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left))}
+      #wm-lock main{width:100%;max-width:340px;display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+      #wm-lock img{width:120px;height:120px;transform:rotate(-8deg)}
+      #wm-lock h1{margin:0;font:400 44px/1 EdOld,Georgia,serif;letter-spacing:-.01em}
+      #wm-lock p{margin:0;color:var(--muted)}
+      #wm-lock .err{color:var(--red);min-height:1.45em}
+      #wm-lock form,#wm-lock .box{width:100%;display:flex;flex-direction:column;gap:10px}
+      #wm-lock input{width:100%;font:inherit;font-size:24px;letter-spacing:.3em;text-align:center;padding:14px 12px;border-radius:14px;border:1px solid var(--rule);background:var(--card);color:var(--ink)}
+      #wm-lock input:focus{outline:2px solid var(--red);outline-offset:1px}
+      #wm-lock button{font:inherit;font-weight:500;border-radius:999px;padding:15px 18px;cursor:pointer;border:1px solid var(--ink);background:transparent;color:var(--ink)}
+      #wm-lock button.go{background:var(--ink);color:var(--paper)}
+      #wm-lock button:disabled{opacity:.5;cursor:default}
+      #wm-lock button.link{background:none;border:0;color:var(--muted);font-weight:350;padding:6px}
+      #wm-lock [hidden]{display:none!important}
+    </style>
+    <main>
+      <img src="sigillo.png" alt="">
+      <h1>WiseMan</h1>
+      <div class="box" data-v="bio" hidden>
+        <button class="go" type="button" data-a="bio">Sblocca con l'impronta</button>
+        <button class="link" type="button" data-a="use-code">Usa il codice</button>
+      </div>
+      <form data-v="code" autocomplete="off" hidden>
+        <p>Inserisci il codice per aprire l'edizione.</p>
+        <input type="password" inputmode="numeric" pattern="[0-9]*" maxlength="${n}" autocomplete="off" aria-label="Codice a ${n} cifre">
+        <button class="go" type="submit">Sblocca</button>
+      </form>
+      <div class="box" data-v="offer" hidden>
+        <p data-e="offer">Come vuoi aprire WiseMan la prossima volta, su questo dispositivo?</p>
+        <button class="go" type="button" data-a="bio-on">Con l'impronta</button>
+        <button type="button" data-a="remember">Senza codice</button>
+        <button class="link" type="button" data-a="always">Chiedi sempre il codice</button>
+      </div>
+      <p class="err" role="alert" data-e="err"></p>
+    </main>`;
+    document.body.appendChild(el);
+    const $ = q => el.querySelector(q), input = $('input'), go = $('form [type=submit]');
+    const show = v => { el.querySelectorAll('[data-v]').forEach(x => { x.hidden = x.dataset.v !== v; }); if (v === 'code') setTimeout(() => input.focus(), 50); };
+    const err = t => { $('[data-e=err]').textContent = t || ''; };
+
+    const configFrom = async k => JSON.parse(new TextDecoder().decode(
+      await crypto.subtle.decrypt({name: 'AES-GCM', iv: unb64(lock.payload.iv)}, await aes(k, ['decrypt']), unb64(lock.payload.ct))));
+    async function keyFromCode(code) {
+      const p = lock.pin;
+      const base = await crypto.subtle.importKey('raw', enc.encode(code), 'PBKDF2', false, ['deriveKey']);
+      const kek = await crypto.subtle.deriveKey({name: 'PBKDF2', salt: unb64(p.salt), iterations: p.iter, hash: 'SHA-256'}, base, {name: 'AES-GCM', length: 256}, false, ['decrypt']);
+      return new Uint8Array(await crypto.subtle.decrypt({name: 'AES-GCM', iv: unb64(p.iv)}, kek, unb64(p.ct)));
+    }
+    // impronta: la passkey con l'estensione PRF dà un segreto che esiste solo dopo il riconoscimento, e cifra la chiave qui sul dispositivo
+    async function prfFrom(id) {
+      const a = await navigator.credentials.get({publicKey: {challenge: rand(32), rpId: location.hostname, userVerification: 'required',
+        allowCredentials: [{type: 'public-key', id: unb64(id)}], extensions: {prf: {eval: {first: PRF_INPUT}}}}});
+      const out = a.getClientExtensionResults().prf?.results?.first;
+      if (!out) throw new Error('noprf');
+      return out;
+    }
+    async function bioCreate() {
+      const c = await navigator.credentials.create({publicKey: {
+        rp: {name: 'WiseMan', id: location.hostname}, user: {id: rand(16), name: 'WiseMan', displayName: 'WiseMan'}, challenge: rand(32),
+        pubKeyCredParams: [{type: 'public-key', alg: -7}, {type: 'public-key', alg: -257}],
+        authenticatorSelection: {authenticatorAttachment: 'platform', residentKey: 'preferred', userVerification: 'required'},
+        extensions: {prf: {eval: {first: PRF_INPUT}}}}});
+      const prf = c.getClientExtensionResults().prf;
+      if (!prf || prf.enabled === false) throw new Error('noprf');
+      return {id: b64(c.rawId), out: prf.results?.first || null};
+    }
+    async function bioStore(id, out, k) {
+      const iv = rand(12), ct = await crypto.subtle.encrypt({name: 'AES-GCM', iv}, await aes(new Uint8Array(out).slice(0, 32), ['encrypt']), k);
+      ls.set('wm-bio', {id, iv: b64(iv), ct: b64(ct)}); ls.del('wm-bio-wait');
+    }
+    async function bioKey() {
+      const bio = ls.get('wm-bio'), out = await prfFrom(bio.id);
+      return new Uint8Array(await crypto.subtle.decrypt({name: 'AES-GCM', iv: unb64(bio.iv)}, await aes(new Uint8Array(out).slice(0, 32), ['decrypt']), unb64(bio.ct)));
+    }
+
+    return new Promise(resolve => {
+      const done = async k => { const c = await configFrom(k); el.remove(); resolve(c); };
+      let pending = null;
+      $('form').addEventListener('submit', async e => {
+        e.preventDefault(); err();
+        const code = input.value.trim();
+        if (!code || go.disabled) return;
+        go.disabled = true; go.textContent = 'Controllo…';
+        let k;
+        try { k = await keyFromCode(code); }
+        catch (x) { go.disabled = false; go.textContent = 'Sblocca'; input.value = ''; input.focus(); return err('Codice sbagliato.'); }
+        if (ls.get('wm-bio') || ls.get('wm-ask')) return done(k);
+        pending = k;
+        if (!window.PublicKeyCredential) $('[data-a=bio-on]').hidden = true;
+        show('offer');
+      });
+      // alla cifra finale parte da solo
+      input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, '').slice(0, n); if (input.value.length === n) $('form').requestSubmit(); });
+      $('[data-a=bio-on]').addEventListener('click', async () => {
+        err();
+        try {
+          const wait = ls.get('wm-bio-wait');
+          // su iPhone la creazione e la lettura della passkey possono chiedere due tocchi separati
+          const c = wait ? {id: wait, out: null} : await bioCreate();
+          const out = c.out || await prfFrom(c.id).catch(x => { ls.set('wm-bio-wait', c.id); throw x; });
+          await bioStore(c.id, out, pending);
+          done(pending);
+        } catch (x) {
+          if (x.message === 'noprf') {
+            ls.del('wm-bio-wait');
+            $('[data-e=offer]').textContent = 'L\'impronta qui non funziona: la passkey è finita in un gestore che non la supporta. Puoi aprire WiseMan senza codice su questo dispositivo.';
+            $('[data-a=bio-on]').hidden = true;
+          } else if (ls.get('wm-bio-wait')) { $('[data-a=bio-on]').textContent = 'Conferma l\'impronta'; err('Tocca ancora per confermare.'); }
+          else err('Passkey non creata. Se compare un altro gestore di password, scegli Google Password Manager, oppure usa "Senza codice".');
+        }
+      });
+      $('[data-a=remember]').addEventListener('click', async () => {
+        const c = await configFrom(pending);
+        localStorage.setItem('wm-gh', JSON.stringify({repo: c.repo, token: c.token}));
+        el.remove(); resolve(c);
+      });
+      $('[data-a=always]').addEventListener('click', () => { ls.set('wm-ask', true); ls.del('wm-bio-wait'); done(pending); });
+      $('[data-a=bio]').addEventListener('click', async () => { err(); try { done(await bioKey()); } catch (x) { err('Impronta non riconosciuta. Riprova o usa il codice.'); } });
+      $('[data-a=use-code]').addEventListener('click', () => { err(); show('code'); });
+
+      if (ls.get('wm-bio')) {
+        show('bio');
+        // Android apre l'impronta da solo; Safari vuole un tocco, e allora resta il pulsante
+        bioKey().then(done).catch(() => {});
+      } else show('code');
+    });
+  }
+
+  // senza accesso.json (prove in locale): si incollano repository e chiave
+  async function pasteKey() {
+    const el = document.createElement('div');
+    el.className = 'setup';
+    el.innerHTML = `<h1>WiseMan</h1><p>Collega il repository privato dei dati.</p>
+      <label>Repository<input id="gh-repo" value="GR1S0/wiseman-data" autocomplete="off" spellcheck="false"></label>
+      <label>Chiave GitHub<input id="gh-token" type="password" autocomplete="off" placeholder="github_pat_…"></label>
+      <button type="button" class="big">Collega</button><p class="muted">La chiave resta solo su questo dispositivo.</p>`;
+    document.body.appendChild(el);
+    return new Promise(res => el.querySelector('button').addEventListener('click', () => {
+      const repo = el.querySelector('#gh-repo').value.trim(), token = el.querySelector('#gh-token').value.trim();
+      if (!repo || !token) return;
+      localStorage.setItem('wm-gh', JSON.stringify({repo, token})); el.remove(); res({repo, token});
+    }));
+  }
+  return async () => (await lockScreen()) || pasteKey();
+})();
+</script>
+<script>
+const SEAL = 'sigillo.png';
+const AREE = {marketing: 'Marketing', sales: 'Sales', content: 'Content', storytelling: 'Storytelling', fitness: 'Fitness', varie: 'Varie'};
+const REGIONI = {content: ['Contenuti', 84, 84], storytelling: ['Racconto', 182, 56], marketing: ['Marketing', 284, 86],
+  varie: ['Mente', 178, 180], fitness: ['Corpo', 76, 264], sales: ['Vendite', 284, 262]};
+const DEC = {costruisci: 'Costruisci', contesto: 'Contesto', tieni: 'Tieni', scarta: 'Scarta'};
+const GG = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'], MM = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
+const MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+const $ = (q, el = document) => el.querySelector(q), $$ = (q, el = document) => [...el.querySelectorAll(q)];
+const app = $('#app');
+const S = () => WM.state;
+const cards = () => Object.values(S().indice.schede || {});
+const card = id => (S().indice.schede || {})[id];
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; };
+const addDays = (iso, n) => { const d = new Date(iso + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+const dayDiff = (a, b) => Math.round((new Date(b + 'T12:00:00') - new Date(a + 'T12:00:00')) / 864e5);
+const short = iso => { const d = new Date(iso.length === 10 ? iso + 'T12:00:00' : iso); return `${GG[d.getDay()].toLowerCase()} ${d.getDate()} ${MM[d.getMonth()]}`; };
+const long = iso => { const d = new Date(iso.length === 10 ? iso + 'T12:00:00' : iso); return `${d.getDate()} ${MESI[d.getMonth()]}`; };
+const ago = iso => (Date.now() - new Date(iso)) / 864e5;
+const undecided = c => c.stato === 'anticamera' && !WM.decisione(c.id);
+const pending = () => cards().filter(undecided).sort((a, b) => b.arrivo.localeCompare(a.arrivo));
+const srcLine = c => [AREE[c.area] || c.area, c.tipo, c.autore].filter(Boolean).map(esc).join(' · ');
+const vibrate = ms => { try { navigator.vibrate && navigator.vibrate(ms); } catch (e) {} };
+
+/* ---------- immagini ---------- */
+function hydrate(root = app) {
+  $$('img[data-img]', root).forEach(el => {
+    const id = el.dataset.img; el.removeAttribute('data-img');
+    WM.img(id).then(u => { if (u) { el.src = u; el.onload = () => el.classList.add('ok'); } }).catch(() => {});
+  });
+}
+const pic = (c, cls = 'img') => c.img ? `<div class="${cls}"><img data-img="${c.id}" alt=""></div>`
+  : `<div class="${cls} ty">${esc((AREE[c.area] || c.area || '?')[0])}</div>`;
+
+/* ---------- toast con Annulla ---------- */
+let toastT = null;
+function toast(html, onUndo) {
+  $$('.toast').forEach(t => t.remove()); clearTimeout(toastT);
+  const t = document.createElement('div'); t.className = 'toast';
+  t.innerHTML = `<span>${html}</span>${onUndo ? '<button type="button">Annulla</button>' : ''}`;
+  document.body.appendChild(t);
+  if (onUndo) t.querySelector('button').onclick = () => { onUndo(); t.remove(); };
+  toastT = setTimeout(() => t.remove(), onUndo ? WM.UNDO_MS : 3500);
+}
+
+/* ---------- il sigillo che cade ---------- */
+function dropSeal(target) {
+  if (!target) return;
+  const r = target.getBoundingClientRect();
+  const s = document.createElement('img'); s.src = SEAL; s.className = 'flystamp drop-in';
+  s.style.left = Math.min(innerWidth - 130, r.right - 110) + 'px'; s.style.top = Math.max(10, r.top - 20) + 'px';
+  document.body.appendChild(s);
+  target.classList.add('thud'); setTimeout(() => vibrate(35), 220);
+  setTimeout(() => { s.style.transition = 'opacity .3s'; s.style.opacity = 0; }, 900);
+  setTimeout(() => { s.remove(); target.classList.remove('thud'); }, 1250);
+}
+
+/* ---------- decidere ---------- */
+function decide(id, dec, extra = {}, anchor) {
+  const c = card(id); if (!c) return;
+  const commento = ($('#commento') || {}).value || '';
+  if (dec === 'costruisci' && !extra.cantiere) return openBuild(id, commento);
+  const d = Object.assign({decisione: dec, commento: commento.trim()}, extra.d || {});
+  if (dec !== 'scarta') dropSeal(route().name === 'pezzo' ? $('.art h1') : anchor || $(`[data-card="${id}"]`) || app);
+  WM.decide(id, d, extra.cantiere);
+  if (route().name === 'pezzo') setTimeout(() => { const b = $('.sealed'); if (b) b.scrollIntoView({behavior: 'smooth', block: 'center'}); }, 700);
+  const msg = dec === 'scarta' ? 'Scartata: non entra nel Second Brain'
+    : `<img src="${SEAL}" alt="">${dec === 'costruisci' ? 'Sigillata, nel cantiere' : dec === 'contesto' ? 'Sigillata, sulla mappa' : 'Sigillata'}`;
+  setTimeout(() => toast(msg, () => WM.undo(id)), dec === 'scarta' ? 0 : 450);
+}
+
+function openBuild(id, commento) {
+  const c = card(id);
+  const open = Object.values(S().cantieri).filter(k => !k.esito).sort((a, b) => (b.m || 0) - (a.m || 0));
+  const sug = (c.cantiere || '').trim();
+  const sugExisting = open.find(k => k.nome.toLowerCase() === sug.toLowerCase());
+  const opts = [];
+  if (sugExisting) opts.push({id: sugExisting.id, nome: sugExisting.nome, k: sugExisting, sug: true});
+  else if (sug) opts.push({id: 'nuovo-sug', nome: sug, nuovo: true, sug: true});
+  for (const k of open) if (k !== sugExisting) opts.push({id: k.id, nome: k.nome, k});
+  opts.push({id: 'nuovo', nome: '', nuovo: true, libero: true});
+  let sel = opts[0].id, ritorno = 7;
+  const dim = document.createElement('div'); dim.className = 'dim';
+  const sh = document.createElement('div'); sh.className = 'sheet';
+  const optHtml = o => `<button type="button" class="opt${o.id === sel ? ' on' : ''}" data-o="${o.id}"><span class="r"></span><div>
+      ${o.libero ? `<h4>Nuovo cantiere</h4>${o.id === sel ? '<input class="field" id="nuovonome" placeholder="Come lo chiami?" style="margin:8px 0 0">' : ''}`
+      : `<h4>${esc(o.nome)}</h4><p>${o.k ? `${(o.k.contenuti || []).length} contenuti${o.k.passo ? ' · passo in corso' : ''}` : 'cantiere nuovo'}${o.sug ? ' · <em>secondo WiseMan va qui</em>' : ''}</p>`}</div></button>`;
+  const draw = () => {
+    sh.innerHTML = `<div><div class="handle"></div><h2>Costruisci</h2><p class="sub">Il pezzo entra in un cantiere e diventa un passo da fare.</p>
+      <div class="lab">Cantiere</div><div class="opts">${opts.map(optHtml).join('')}</div>
+      <div class="lab">Il primo passo</div><textarea class="field" id="passo" rows="4" placeholder="Cosa fai, quanto e quando">${esc(sh._passo != null ? sh._passo : c.passo || '')}</textarea>
+      <div class="lab">Ne riparliamo fra</div>
+      <div class="chips">${[[3, '3 giorni'], [7, '7 giorni'], [14, '14 giorni'], [0, 'Mai']].map(([n, l]) => `<button type="button" data-r="${n}" class="${n === ritorno ? 'on' : ''}">${l}</button>`).join('')}</div>
+      <button type="button" class="big" id="sigilla"><img src="${SEAL}" alt="">Sigilla</button></div>`;
+  };
+  draw();
+  const close = () => { dim.remove(); sh.remove(); };
+  dim.onclick = close;
+  sh.addEventListener('input', e => { if (e.target.id === 'passo') sh._passo = e.target.value; });
+  sh.addEventListener('click', e => {
+    const o = e.target.closest('[data-o]'), r = e.target.closest('[data-r]');
+    if (o && !e.target.closest('input')) { sel = o.dataset.o; draw(); if (sel === 'nuovo') setTimeout(() => $('#nuovonome').focus(), 30); }
+    if (r) { ritorno = +r.dataset.r; draw(); }
+    if (e.target.closest('#sigilla')) {
+      const o2 = opts.find(x => x.id === sel);
+      const nome = o2.libero ? (($('#nuovonome') || {}).value || '').trim() : o2.nome;
+      if (!nome) { $('#nuovonome') && $('#nuovonome').focus(); return; }
+      const passo = (($('#passo') || {}).value || '').trim();
+      const t = today(), back = ritorno ? addDays(t, ritorno) : null;
+      const base = o2.k ? JSON.parse(JSON.stringify(o2.k)) : {id: 'c' + Date.now().toString(36), nome, area: c.area, contenuti: [], creato: t};
+      if (!base.contenuti.includes(id)) base.contenuti.push(id);
+      if (passo) Object.assign(base, {passo, inizio: t, ritorno: back, giorni: {}, esito: null});
+      close();
+      decide(id, 'costruisci', {cantiere: base, d: {cantiere: nome, passo, ritorno: back, commento}}, $(`[data-card="${id}"]`));
+    }
+  });
+  document.body.append(dim, sh);
+}
+
+/* ---------- markdown minimo per leggere la nota ---------- */
+function inline(s) {
+  s = esc(s);
+  return s.replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<i>$2</i>')
+    .replace(/\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g, (m, a, b) => `<span class="wl">${b || a}</span>`)
+    .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+}
+function md(text) {
+  const L = text.split('\n'); let out = '', i = 0;
+  while (i < L.length) {
+    const l = L[i];
+    if (/^```/.test(l)) { const buf = []; i++; while (i < L.length && !/^```/.test(L[i])) buf.push(L[i++]); i++; out += `<pre><code>${esc(buf.join('\n'))}</code></pre>`; continue; }
+    if (/^#{1,6} /.test(l)) { const n = l.match(/^#+/)[0].length; out += n <= 1 ? '' : `<h${Math.min(n + 1, 4)}>${inline(l.replace(/^#+ /, ''))}</h${Math.min(n + 1, 4)}>`; i++; continue; }
+    if (/^---+\s*$/.test(l)) { out += '<hr>'; i++; continue; }
+    if (/^\|/.test(l)) { const rows = []; while (i < L.length && /^\|/.test(L[i])) rows.push(L[i++]);
+      const cells = r => r.replace(/^\||\|\s*$/g, '').split('|').map(x => x.trim());
+      const body = rows.filter(r => !/^\|[\s:|-]+\|?\s*$/.test(r));
+      out += '<table>' + body.map((r, k) => `<tr>${cells(r).map(x => k === 0 ? `<th>${inline(x)}</th>` : `<td>${inline(x)}</td>`).join('')}</tr>`).join('') + '</table>'; continue; }
+    if (/^\s*([-*]|\d+\.) /.test(l)) { const ol = /^\s*\d+\./.test(l); const items = [];
+      while (i < L.length && /^\s*([-*]|\d+\.) /.test(L[i])) items.push(L[i++].replace(/^\s*([-*]|\d+\.) (\[[ x]\] )?/, (m, a, b) => b ? (b.includes('x') ? '☑ ' : '☐ ') : ''));
+      out += `<${ol ? 'ol' : 'ul'}>${items.map(x => `<li>${inline(x)}</li>`).join('')}</${ol ? 'ol' : 'ul'}>`; continue; }
+    if (/^> /.test(l)) { const b = []; while (i < L.length && /^> /.test(L[i])) b.push(L[i++].slice(2)); out += `<blockquote>${inline(b.join(' '))}</blockquote>`; continue; }
+    if (!l.trim()) { i++; continue; }
+    const p = []; while (i < L.length && L[i].trim() && !/^(#|```|\||\s*([-*]|\d+\.) |> |---)/.test(L[i])) p.push(L[i++]);
+    if (!p.length) p.push(L[i++]);
+    out += `<p>${p.map(inline).join('<br>')}</p>`;
+  }
+  return out;
+}
+
+/* ---------- schermate ---------- */
+function decidedBlock(c, d) {
+  const lab = d.decisione === 'scarta' ? 'Scartata' : `Sigillata${d.pending ? '' : ''} · ${DEC[d.decisione]}`;
+  const rows = [];
+  if (d.decisione !== 'scarta') rows.push(['Dove va', d.applied ? `Second Brain · ${AREE[c.area] || c.area}` : `Second Brain · ${AREE[c.area] || c.area}, al prossimo giro del Mac`]);
+  if (d.cantiere) rows.push(['Cantiere', d.cantiere]);
+  if (d.passo) rows.push(['Il passo', d.passo]);
+  if (d.ritorno) rows.push(['Ne riparliamo', long(d.ritorno)]);
+  if (d.commento) rows.push(['Il tuo pensiero', d.commento]);
+  return `<div class="sealed${d.decisione === 'scarta' ? ' drop' : ''}" data-card="${c.id}">${d.decisione !== 'scarta' ? `<img class="stamp" src="${SEAL}" alt="">` : ''}
+    <div class="ok">${lab}${d.quando ? ' · ' + short(d.quando) : ''}</div>
+    <div class="dl">${rows.map(([a, b]) => `<div><span>${esc(a)}</span><span>${esc(b)}</span></div>`).join('')}</div>
+    ${d.pending ? `<p class="muted" style="font-size:13px;margin:4px 0 10px">Parte fra pochi secondi. <button type="button" data-undo="${c.id}" style="text-decoration:underline">Annulla</button></p>` : ''}</div>`;
+}
+
+function viewEdizione() {
+  const ed = S().edizione;
+  if (!ed || !ed.data) return `${barHtml()}<div class="empty"><b>La prima edizione arriva domattina</b>Alle 7 WiseMan mette insieme quello che hai mandato su Telegram. Intanto trovi tutto nell'Anticamera.</div>`;
+  const ids = [...(ed.nuovi || [])].filter(card);
+  const again = (ed.riproposte || []).filter(card);
+  const open = card(ed.apertura) || card(ids[0]) || card(again[0]);
+  const PRI = {costruisci: 0, contesto: 1, tieni: 2, scarta: 3};
+  const rest = ids.concat(again).filter(id => !open || id !== open.id).map(card)
+    .sort((a, b) => (PRI[a.consiglio] ?? 2) - (PRI[b.consiglio] ?? 2) || b.arrivo.localeCompare(a.arrivo));
+  const duo = rest.filter(c => c.img).slice(0, 2), brevi = rest.filter(c => !duo.includes(c));
+  const k = pending().length;
+  return `${barHtml(ed)}
+    <div class="kick">${ids.length} ${ids.length === 1 ? 'contenuto nuovo' : 'contenuti nuovi'} · ${k} da decidere</div>
+    ${open ? hero(open, ed) : ''}
+    ${duo.length ? `<div class="duo">${duo.map(c => `<a href="#pezzo/${c.id}" style="text-decoration:none">${pic(c)}<div class="src">${esc(AREE[c.area] || '')} · ${esc(c.tipo)}</div><h3>${esc(c.titolo)}</h3>${stateMark(c)}</a>`).join('')}</div>` : ''}
+    ${brevi.length ? `<section class="brevi"><h4>In breve</h4>${brevi.map(c => `<a class="row" href="#pezzo/${c.id}" style="text-decoration:none">${pic(c, 't img')}<div><div class="src">${srcLine(c)}</div><h3>${esc(c.titolo)}</h3>${again.includes(c.id) ? '<div class="note">Ancora in anticamera: te la ripropongo una volta</div>' : ''}${stateMark(c)}</div></a>`).join('')}</section>` : ''}
+    <div class="vow"><img src="${SEAL}" alt="">Niente entra nel Second Brain senza il tuo sì.</div>`;
+}
+function stateMark(c) {
+  const d = WM.decisione(c.id); if (!d) return '';
+  return d.decisione === 'scarta' ? '<div class="note">Scartata</div>' : `<div class="sealmark" style="margin-top:6px"><img src="${SEAL}" alt="">${DEC[d.decisione]}</div>`;
+}
+function barHtml(ed) {
+  const d = ed && ed.data ? new Date(ed.data + 'T12:00:00') : new Date();
+  return `<div class="bar"><img src="${SEAL}" alt=""><span class="mast">WiseMan</span><span class="meta">${GG[d.getDay()]} ${d.getDate()} ${MM[d.getMonth()]}${ed && ed.numero ? `<br>N. ${ed.numero}` : ''}</span></div>`;
+}
+function hero(c, ed) {
+  const d = WM.decisione(c.id);
+  return `<article class="hero"><a href="#pezzo/${c.id}">${pic(c)}</a>
+    <div class="tx" data-card="${c.id}"><div class="src">${srcLine(c)}</div>
+    <a href="#pezzo/${c.id}" style="text-decoration:none"><h2>${esc(c.titolo)}</h2></a>
+    ${c.idea ? `<p class="stand">${esc(c.idea)}</p>` : ''}
+    ${ed.perche_apertura ? `<p class="wm"><i>Perché in apertura:</i> ${esc(ed.perche_apertura)}</p>` : ''}
+    ${d ? stateMark(c) : actsHtml(c)}</div></article>`;
+}
+const actsHtml = c => `<div class="acts">${Object.entries(DEC).map(([k, l]) => `<button type="button" data-dec="${k}" data-id="${c.id}" class="${k === c.consiglio ? 'sug' : ''}">${l}</button>`).join('')}</div>`;
+
+function viewPezzo(id, seq) {
+  const c = card(id);
+  if (!c) return `<div class="nav"><a href="#edizione">‹ Edizione</a><span></span></div><div class="empty"><b>Scheda non trovata</b></div>`;
+  const d = WM.decisione(id);
+  const queue = pending();
+  const pos = queue.findIndex(x => x.id === id);
+  const next = queue.find(x => x.id !== id);
+  const back = seq ? '#anticamera' : (history.state && history.state.from) || '#edizione';
+  const sugText = c.consiglio === 'costruisci' && c.cantiere ? `Da costruire, nel cantiere «${esc(c.cantiere)}»${c.passo ? `: ${esc(c.passo)}` : ''}`
+    : {contesto: 'Da tenere sulla mappa del Contesto', tieni: 'Da tenere come riferimento', scarta: 'Da scartare', costruisci: 'Da costruire'}[c.consiglio] || '';
+  return `<div class="p"><div class="nav"><a href="${back}" style="text-decoration:none">‹ ${seq ? 'Anticamera' : 'Indietro'}</a><span>${!d && pos >= 0 ? `${pos + 1} di ${queue.length}` : ''}</span></div>
+    ${c.img ? pic(c) : ''}
+    <div class="art"><div class="src">${srcLine(c)}</div>
+    <h1>${esc(c.titolo)}</h1>
+    ${c.idea ? `<p class="stand">${esc(c.idea)}</p>` : ''}
+    ${c.punti && c.punti.length ? `<ol class="pts">${c.punti.map(p => `<li>${esc(p)}</li>`).join('')}</ol>` : ''}
+    ${c.perche ? `<div class="why2"><span class="lab">Cosa c'entra con te</span>${esc(c.perche)}${sugText && !d ? `<p><b style="font-weight:500">WiseMan:</b> ${sugText}</p>` : ''}</div>` : ''}
+    <div class="links"><button type="button" id="leggi">Leggi la nota completa</button>${c.fonte ? `<a href="${esc(c.fonte)}" target="_blank" rel="noopener">L'originale ↗</a>` : ''}</div>
+    <div id="nota"></div>
+    ${d ? decidedBlock(c, d) + (next ? `<button type="button" class="next" data-go="#pezzo/${next.id}${seq ? '?seq' : ''}"><div><div class="lab">Prossima</div><h4>${esc(next.titolo)}</h4></div><span class="arr">→</span></button>` : '<div class="vow"><img src="' + SEAL + '" alt="">Anticamera vuota: hai deciso tutto.</div>') : ''}
+    </div></div>`;
+}
+const decBar = c => `<div class="decbar" data-card="${c.id}"><div><textarea id="commento" placeholder="Un pensiero tuo, se vuoi" rows="1"></textarea>
+  <div class="row4">${Object.entries(DEC).map(([k, l]) => `<button type="button" data-dec="${k}" data-id="${c.id}" class="${k === c.consiglio ? 'sug' : ''}">${l}</button>`).join('')}</div></div></div>`;
+
+function viewAnticamera() {
+  const all = pending();
+  const groups = [['Arrivate da ieri', c => ago(c.arrivo) < 1.5], ['Questa settimana', c => ago(c.arrivo) >= 1.5 && ago(c.arrivo) < 7], ['Da più di una settimana', c => ago(c.arrivo) >= 7]];
+  const recent = cards().filter(c => c.stato === 'anticamera' && WM.decisione(c.id) && WM.decisione(c.id).pending);
+  return `<div class="head"><h1>Anticamera</h1><p>Quello che il messaggero ha raccolto e tu non hai ancora deciso.</p></div>
+    ${all.length ? `<button type="button" class="one" data-go="#pezzo/${all[0].id}?seq"><span>Decidi una alla volta</span><span>${all.length} →</span></button>` : ''}
+    ${groups.map(([t, f]) => { const g = all.filter(f); return g.length ? `<div class="grp"><div class="lab">${t} · <b>${g.length}</b></div></div>${g.map(c => rowIt(c)).join('')}` : ''; }).join('')}
+    ${recent.length ? `<div class="grp"><div class="lab">Appena decise</div></div>${recent.map(c => rowIt(c, true)).join('')}` : ''}
+    ${all.length ? '' : '<div class="empty"><b>Anticamera vuota</b>Hai deciso tutto. Quello che mandi su Telegram arriva qui.</div>'}
+    <div class="vow"><img src="${SEAL}" alt="">Niente entra nel Second Brain senza il tuo sì.</div>`;
+}
+const rowIt = (c, done) => `<div class="it-wrap">${done ? '' : `<div class="behind"><button type="button" data-dec="tieni" data-id="${c.id}">Tieni</button><button type="button" data-dec="scarta" data-id="${c.id}">Scarta</button></div>`}
+  <div class="it${done ? ' decided' : ''}" data-card="${c.id}" data-go="#pezzo/${c.id}">${pic(c, 't img')}<div><div class="src">${srcLine(c)}</div><h3>${esc(c.titolo)}</h3>
+  ${done ? `<div class="note">${DEC[WM.decisione(c.id).decisione]} · <button type="button" data-undo="${c.id}" style="text-decoration:underline">Annulla</button></div>` : c.riproposta ? '<div class="note">Te l\'ho riproposta in edizione</div>' : ''}</div></div></div>`;
+
+function viewCantieri() {
+  const t = today();
+  const all = Object.values(S().cantieri);
+  const due = k => !k.esito && k.ritorno && k.ritorno <= t;
+  const open = all.filter(k => !k.esito).sort((a, b) => due(b) - due(a) || (b.m || 0) - (a.m || 0));
+  const closed = all.filter(k => k.esito).sort((a, b) => (b.m || 0) - (a.m || 0));
+  const title = id => (card(id) || {}).titolo || id;
+  const box = k => {
+    const contents = (k.contenuti || []).map(id => `<a href="#pezzo/${id}">${esc(title(id))}</a>`).join(' · ');
+    if (due(k)) return `<div class="cant due"><div class="lab">Ritorno · ${k.ritorno === t ? 'oggi' : 'da ' + short(k.ritorno)}</div><h3>${esc(k.nome)}</h3><p class="m">${esc(AREE[k.area] || '')} · ${contents}</p>
+      <p class="q">Il passo era: <b>${esc(k.passo)}</b>. Ha funzionato?</p>
+      <div class="acts"><button type="button" class="k" data-esito="si" data-k="${k.id}">Sì, lo tengo</button><button type="button" data-esito="in parte" data-k="${k.id}">In parte</button><button type="button" data-esito="no" data-k="${k.id}">No</button></div></div>`;
+    let dots = '';
+    if (k.passo && k.inizio) {
+      const n = Math.min(Math.max(k.ritorno ? dayDiff(k.inizio, k.ritorno) : 7, 1), 21);
+      dots = `<div class="dots">${Array.from({length: n}, (_, i) => { const day = addDays(k.inizio, i); return `<i class="${(k.giorni || {})[day] ? 'd' : ''}${day === t ? ' t' : ''}"></i>`; }).join('')}</div>`;
+    }
+    const nDone = Object.keys(k.giorni || {}).length, doneToday = (k.giorni || {})[t];
+    return `<div class="cant"><div class="lab">${esc(AREE[k.area] || '')} · ${(k.contenuti || []).length} ${(k.contenuti || []).length === 1 ? 'contenuto' : 'contenuti'}</div><h3>${esc(k.nome)}</h3><p class="m">${contents}</p>
+      ${k.passo ? `<p class="q"><b>${esc(k.passo)}</b></p>${dots}<div class="rw"><span>${nDone ? `Fatto ${nDone} ${nDone === 1 ? 'volta' : 'volte'}` : 'Non ancora iniziato'}${k.ritorno ? ` · ne riparliamo ${short(k.ritorno)}` : ''}</span><button type="button" class="pill${doneToday ? '' : ' k'}" data-oggi="${k.id}">${doneToday ? 'Fatto ✓' : 'Fatto oggi'}</button></div>`
+      : `<div class="rw"><span>Nessun passo aperto</span><button type="button" class="pill" data-passo="${k.id}">Nuovo passo</button></div>`}</div>`;
+  };
+  return `<div class="head"><h1>Cantieri</h1><p>I sistemi su misura che stai costruendo con quello che leggi.</p></div>
+    ${open.length ? open.map(box).join('') : '<div class="empty"><b>Nessun cantiere aperto</b>Nasce quando scegli Costruisci su una scheda: un cantiere, un primo passo, e una data in cui ne riparliamo.</div>'}
+    ${closed.length ? `<div class="grp"><div class="lab">Chiusi</div></div>${closed.map(k => `<button type="button" class="ar" data-passo="${k.id}"><span class="x">${k.esito === 'si' ? '✓' : k.esito === 'no' ? '✕' : '~'}</span><div><h4>${esc(k.nome)}</h4><p>${esc(k.passo || '')} · ${k.esito === 'si' ? 'ha funzionato' : k.esito === 'no' ? 'non ha funzionato' : 'in parte'}</p></div><span class="d">Riapri</span></button>`).join('')}` : ''}`;
+}
+
+function viewContesto() {
+  const ctx = cards().filter(c => { const d = WM.decisione(c.id); return d && d.decisione === 'contesto'; })
+    .sort((a, b) => (WM.decisione(b.id).quando || '').localeCompare(WM.decisione(a.id).quando || ''));
+  const walk = cards().map(c => [c, WM.decisione(c.id)]).filter(([c, d]) => d && d.decisione !== 'scarta' && d.quando && ago(d.quando) < 21)
+    .sort((a, b) => a[1].quando.localeCompare(b[1].quando)).map(([c]) => c.area);
+  const path = walk.filter((a, i) => a !== walk[i - 1] && REGIONI[a]).map(a => REGIONI[a]);
+  return `<div class="head"><h1>Contesto</h1><p>Il territorio in cui ti muovi, e dove sei passato.</p></div>
+    <div class="map">${mapSvg(ctx, path)}</div>
+    <div class="ctx"><div class="lab" style="margin-bottom:4px">Segnati sulla mappa</div>
+    ${ctx.length ? ctx.map((c, i) => `<button type="button" class="ci" data-go="#pezzo/${c.id}"><span class="n">${i + 1}</span><div><h4>${esc(c.titolo)}</h4><p>${esc(REGIONI[c.area] ? REGIONI[c.area][0] : c.area)} · ${short(WM.decisione(c.id).quando || c.arrivo)}</p></div></button>`).join('')
+      : '<p class="muted" style="font-size:14px">Quando scegli Contesto su una scheda, la trovi segnata qui, nella sua zona. Il tratteggio rosso è il tuo percorso delle ultime tre settimane.</p>'}</div>`;
+}
+function rnd(s) { return () => { s = (s * 16807) % 2147483647; return (s - 1) / 2147483646; }; }
+function closedPath(P) { const n = P.length, f = v => v.toFixed(1); let d = `M${f(P[0][0])},${f(P[0][1])}`;
+  for (let i = 0; i < n; i++) { const p0 = P[(i - 1 + n) % n], p1 = P[i], p2 = P[(i + 1) % n], p3 = P[(i + 2) % n];
+    d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)},${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)},${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])},${f(p2[1])}`; } return d + 'Z'; }
+function openPath(P) { if (P.length < 2) return ''; const f = v => v.toFixed(1); let d = `M${f(P[0][0])},${f(P[0][1])}`;
+  for (let i = 0; i < P.length - 1; i++) { const p0 = P[Math.max(i - 1, 0)], p1 = P[i], p2 = P[i + 1], p3 = P[Math.min(i + 2, P.length - 1)];
+    d += `C${f(p1[0] + (p2[0] - p0[0]) / 6)},${f(p1[1] + (p2[1] - p0[1]) / 6)} ${f(p2[0] - (p3[0] - p1[0]) / 6)},${f(p2[1] - (p3[1] - p1[1]) / 6)} ${f(p2[0])},${f(p2[1])}`; } return d; }
+function ring(cx, cy, r, seed) { const R = rnd(seed), a1 = R() * 6, a2 = R() * 6, a3 = R() * 6, P = [];
+  for (let i = 0; i < 14; i++) { const a = i / 14 * Math.PI * 2, k = 1 + .16 * Math.sin(a * 2 + a1) + .1 * Math.sin(a * 3 + a2) + .05 * Math.sin(a * 5 + a3) * (r / 40); P.push([cx + Math.cos(a) * r * k * 1.2, cy + Math.sin(a) * r * k * .82]); }
+  return closedPath(P); }
+const FIG = c => `<g fill="${c}"><ellipse cx="0" cy="-33.2" rx="6.4" ry="1.7"/><ellipse cx="0" cy="-35.2" rx="3.3" ry="2.9"/><circle cx="0" cy="-30.4" r="3.3"/><path d="M-5.2,-27 Q-7.2,-15 -6.2,-8 L6.2,-8 Q7.2,-15 5.2,-27 Z"/><rect x="-7.2" y="-27.5" width="14.4" height="15" rx="2.4"/><rect x="-8.4" y="-31.6" width="16.8" height="4.4" rx="2.1"/><rect x="-4.3" y="-8.6" width="3.3" height="8.6" rx="1"/><rect x="1" y="-9.2" width="3.3" height="8.4" rx="1"/></g><path d="M6,-23 L9,-17" stroke="${c}" stroke-width="2.2" stroke-linecap="round"/><line x1="9.4" y1="-39" x2="10.8" y2="0.5" stroke="${c}" stroke-width="1.5" stroke-linecap="round"/>`;
+function mapSvg(ctx, path) {
+  let s = `<svg viewBox="0 0 356 318"><defs><pattern id="hx" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="5" stroke="#c9b894" stroke-width=".6"/></pattern></defs>`;
+  const seeds = {content: 7, storytelling: 3, marketing: 13, varie: 21, fitness: 5, sales: 9};
+  for (const [k, [n, x, y]] of Object.entries(REGIONI)) for (let r = k === 'storytelling' ? 32 : 54; r >= 10; r -= 11) s += `<path d="${ring(x, y, r, seeds[k])}" fill="${r < 12 ? 'url(#hx)' : 'none'}" stroke="${r < 23 ? '#a8956f' : '#c6b48e'}" stroke-width="${r < 23 ? .9 : .7}"/>`;
+  const river = 'M-10,150 C40,140 60,170 120,150 S 240,124 270,152 S 330,190 370,172';
+  s += `<path d="${river}" fill="none" stroke="#b9c3c0" stroke-width="5" opacity=".7"/><path d="${river}" fill="none" stroke="#8fa09c" stroke-width=".8"/>`;
+  const pts = path.map(([n, x, y]) => [x + 24, y + 32]);
+  if (pts.length > 1) s += `<path d="${openPath(pts)}" fill="none" stroke="#80201a" stroke-width="1.7" stroke-dasharray="5 4" stroke-linecap="round"/>`;
+  for (const [n, x, y] of Object.values(REGIONI)) s += `<text x="${x}" y="${y + 4}" text-anchor="middle" font-family="EdOld,Georgia,serif" font-size="13" letter-spacing="2.2" fill="#1f1a16" stroke="#efe4cf" stroke-width="4" paint-order="stroke">${n.toUpperCase()}</text>`;
+  const per = {};
+  ctx.forEach((c, i) => { const R = REGIONI[c.area] || REGIONI.varie; const k = per[c.area] = (per[c.area] || 0) + 1;
+    const a = -1.1 + k * 1.9, x = R[1] + Math.cos(a) * 34, y = R[2] + Math.sin(a) * 22 - 6;
+    s += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="9" fill="#80201a" stroke="#efe4cf" stroke-width="1.5"/><text x="${x.toFixed(1)}" y="${(y + 3.6).toFixed(1)}" text-anchor="middle" font-family="Montreal,Arial,sans-serif" font-weight="500" font-size="10" fill="#f4ecdc">${i + 1}</text>`; });
+  if (pts.length) { const [x, y] = pts[pts.length - 1];
+    s += `<ellipse cx="${x}" cy="${y}" rx="8" ry="2.2" fill="#1f1a16" opacity=".18"/><g transform="translate(${x - 1},${y}) scale(.62)">${FIG('#1f1a16')}</g><text x="${x + 12}" y="${y + 10}" font-family="Montreal,Arial,sans-serif" font-weight="500" font-size="10" letter-spacing="1" fill="#80201a">SEI QUI</text>`; }
+  s += `<g transform="translate(334,30)"><circle r="13" fill="none" stroke="#1f1a16" stroke-width=".8"/><path d="M0,-11 L3,0 L0,11 L-3,0Z" fill="#1f1a16"/><path d="M0,0 L3,0 L0,11Z" fill="#efe4cf" stroke="#1f1a16" stroke-width=".6"/><text y="-17" text-anchor="middle" font-family="EdOld,Georgia,serif" font-size="11" fill="#1f1a16">N</text></g>`;
+  return s + '</svg>';
+}
+
+let archQ = '', archArea = '', archDrop = false;
+function viewArchivio() {
+  const all = cards().map(c => [c, WM.decisione(c.id)]).filter(([c, d]) => d && (archDrop ? d.decisione === 'scarta' : d.decisione !== 'scarta'));
+  const count = a => all.filter(([c]) => c.area === a).length;
+  const q = archQ.trim().toLowerCase();
+  const T = S().testi || {};
+  const hit = ([c, d]) => (!archArea || c.area === archArea) && (!q || [c.titolo, c.idea, (c.punti || []).join(' '), d.commento, d.cantiere, T[c.id], c.autore].join(' ').toLowerCase().includes(q));
+  const rows = all.filter(hit).sort((a, b) => (b[1].quando || b[0].arrivo).localeCompare(a[1].quando || a[0].arrivo));
+  const sealed = cards().filter(c => { const d = WM.decisione(c.id); return d && d.decisione !== 'scarta'; }).length;
+  return `<div class="head"><h1>Archivio</h1><p>${sealed} ${sealed === 1 ? 'nota sigillata' : 'note sigillate'} nel Second Brain.</p></div>
+    <label class="search"><svg width="17" height="17" viewBox="0 0 17 17"><circle cx="7" cy="7" r="5.5" fill="none" stroke="#6e6157" stroke-width="1.5"/><path d="M11 11l4.5 4.5" stroke="#6e6157" stroke-width="1.5" stroke-linecap="round"/></svg><input id="q" type="search" placeholder="Cerca nelle note e nei tuoi pensieri" value="${esc(archQ)}" autocomplete="off"></label>
+    <div class="fil"><button type="button" data-area="" class="${!archArea ? 'on' : ''}">Tutte</button>${Object.keys(AREE).filter(count).map(a => `<button type="button" data-area="${a}" class="${archArea === a ? 'on' : ''}">${AREE[a]} ${count(a)}</button>`).join('')}<button type="button" data-drop class="${archDrop ? 'on' : ''}">Scartate</button></div>
+    <div id="arows">${archRows(rows)}</div>`;
+}
+const archRows = rows => rows.length ? rows.map(([c, d]) => `<button type="button" class="ar" data-go="#pezzo/${c.id}">${d.decisione === 'scarta' ? '<span class="x">✕</span>' : `<img src="${SEAL}" alt="">`}<div><h4>${esc(c.titolo)}</h4><p>${esc(AREE[c.area] || c.area)}${c.tipo ? ' · ' + esc(c.tipo) : ''} · ${short(d.quando || c.arrivo)}${d.pending ? ' · in partenza' : !d.applied ? ' · al prossimo giro' : ''}</p></div><span class="d">${d.decisione === 'costruisci' ? 'Cantiere' : DEC[d.decisione]}</span></button>`).join('')
+  : `<div class="empty">${archQ || archArea ? 'Niente con questi filtri.' : archDrop ? 'Nessuna scheda scartata.' : '<b>Ancora niente</b>Quello che sigilli nell\'Edizione o nell\'Anticamera finisce qui.'}</div>`;
+
+/* ---------- router ---------- */
+const TABS = [['edizione', 'Edizione'], ['anticamera', 'Anticamera'], ['cantieri', 'Cantieri'], ['contesto', 'Contesto'], ['archivio', 'Archivio']];
+let lastRoute = '';
+function route() {
+  const h = (location.hash || '#edizione').slice(1);
+  const [name, rest] = h.split('/');
+  const [id, qs] = (rest || '').split('?');
+  return {name: name || 'edizione', id, seq: qs === 'seq'};
+}
+function render(keepScroll) {
+  const r = route(), key = location.hash;
+  const y = scrollY;
+  $$('.decbar').forEach(x => x.remove());
+  let html;
+  if (r.name === 'pezzo') html = viewPezzo(r.id, r.seq);
+  else html = ({edizione: viewEdizione, anticamera: viewAnticamera, cantieri: viewCantieri, contesto: viewContesto, archivio: viewArchivio}[r.name] || viewEdizione)();
+  const typing = document.activeElement && document.activeElement.id === 'q';
+  if (typing && r.name === 'archivio') { const box = $('#arows'); if (box) { box.outerHTML = `<div id="arows">${archRows(cards().map(c => [c, WM.decisione(c.id)]))}</div>`; } }
+  app.innerHTML = `<div class="scr">${html}</div>`;
+  if (r.name === 'pezzo') {
+    const c = card(r.id);
+    if (c && !WM.decisione(c.id)) { document.body.insertAdjacentHTML('beforeend', decBar(c)); $('.scr').classList.add('dec-open'); }
+  }
+  const tabs = $('#tabs');
+  tabs.hidden = r.name === 'pezzo';
+  const k = pending().length;
+  tabs.firstElementChild.innerHTML = TABS.map(([t, l]) => `<a href="#${t}" class="${r.name === t ? 'on' : ''}">${l}${t === 'anticamera' && k ? `<b>${k}</b>` : ''}</a>`).join('');
+  hydrate();
+  if (key !== lastRoute) { if (!keepScroll) scrollTo(0, 0); lastRoute = key; } else scrollTo(0, y);
+  if (r.name === 'archivio' && typing) { const q = $('#q'); q.focus(); q.setSelectionRange(q.value.length, q.value.length); }
+}
+
+/* ---------- gesti ---------- */
+document.addEventListener('click', e => {
+  const t = e.target;
+  const dec = t.closest('[data-dec]');
+  if (dec) { e.preventDefault(); e.stopPropagation(); const id = dec.dataset.id; closeSwipes();
+    decide(id, dec.dataset.dec, {}, dec.closest('[data-card]') || $(`[data-card="${id}"]`)); return; }
+  const un = t.closest('[data-undo]'); if (un) { e.stopPropagation(); WM.undo(un.dataset.undo); $$('.toast').forEach(x => x.remove()); return; }
+  if (t.closest('#leggi')) { const id = route().id, box = $('#nota'); box.innerHTML = '<p class="muted">Apro la nota…</p>';
+    WM.note(id).then(text => { box.innerHTML = `<div class="md">${md(text.split('\n').slice(1).join('\n'))}</div>`; t.closest('#leggi').remove(); })
+      .catch(() => { box.innerHTML = '<p class="muted">Non riesco ad aprirla: serve la rete la prima volta.</p>'; }); return; }
+  const oggi = t.closest('[data-oggi]'); if (oggi) { const k = JSON.parse(JSON.stringify(S().cantieri[oggi.dataset.oggi])); k.giorni = k.giorni || {};
+    if (k.giorni[today()]) delete k.giorni[today()]; else { k.giorni[today()] = true; vibrate(20); } WM.saveCantiere(k); return; }
+  const es = t.closest('[data-esito]'); if (es) { const k = Object.assign({}, S().cantieri[es.dataset.k], {esito: es.dataset.esito, chiuso: today()}); WM.saveCantiere(k);
+    toast(es.dataset.esito === 'si' ? 'Bene: il passo resta nel cantiere come cosa che funziona' : 'Segnato. Puoi riaprire il cantiere con un passo nuovo'); return; }
+  const np = t.closest('[data-passo]'); if (np) { const k = S().cantieri[np.dataset.passo]; newStep(k); return; }
+  const ar = t.closest('[data-area]'); if (ar) { archArea = ar.dataset.area; render(true); return; }
+  if (t.closest('[data-drop]')) { archDrop = !archDrop; render(true); return; }
+  const go = t.closest('[data-go]');
+  if (go && !t.closest('a') && !swipeMoved) { history.replaceState({from: location.hash}, ''); location.hash = go.dataset.go; }
+  const a = t.closest('a[href^="#pezzo"]'); if (a) history.replaceState({from: location.hash}, '');
+});
+document.addEventListener('input', e => { if (e.target.id === 'q') { archQ = e.target.value; const box = $('#arows');
+  const all = cards().map(c => [c, WM.decisione(c.id)]).filter(([c, d]) => d && (archDrop ? d.decisione === 'scarta' : d.decisione !== 'scarta'));
+  const q = archQ.trim().toLowerCase(), T = S().testi || {};
+  box.innerHTML = archRows(all.filter(([c, d]) => (!archArea || c.area === archArea) && (!q || [c.titolo, c.idea, (c.punti || []).join(' '), d.commento, d.cantiere, T[c.id], c.autore].join(' ').toLowerCase().includes(q)))
+    .sort((a, b) => (b[1].quando || b[0].arrivo).localeCompare(a[1].quando || a[0].arrivo))); } });
+
+function newStep(k) {
+  const dim = document.createElement('div'); dim.className = 'dim';
+  const sh = document.createElement('div'); sh.className = 'sheet';
+  let ritorno = 7;
+  const draw = () => { sh.innerHTML = `<div><div class="handle"></div><h2>${esc(k.nome)}</h2><p class="sub">Un passo nuovo per questo cantiere.</p>
+    <div class="lab">Il passo</div><textarea class="field" id="np" rows="2" placeholder="Cosa fai, quanto e quando">${esc(sh._v || '')}</textarea>
+    <div class="lab">Ne riparliamo fra</div><div class="chips">${[[3, '3 giorni'], [7, '7 giorni'], [14, '14 giorni'], [0, 'Mai']].map(([n, l]) => `<button type="button" data-r="${n}" class="${n === ritorno ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <button type="button" class="big" id="go">Riparti</button></div>`; };
+  draw();
+  const close = () => { dim.remove(); sh.remove(); };
+  dim.onclick = close;
+  sh.addEventListener('input', e => { sh._v = e.target.value; });
+  sh.addEventListener('click', e => {
+    const r = e.target.closest('[data-r]'); if (r) { ritorno = +r.dataset.r; draw(); }
+    if (e.target.closest('#go')) { const passo = ($('#np').value || '').trim(); if (!passo) return $('#np').focus();
+      const t = today(); WM.saveCantiere(Object.assign({}, k, {passo, inizio: t, ritorno: ritorno ? addDays(t, ritorno) : null, giorni: {}, esito: null, chiuso: null})); close(); }
+  });
+  document.body.append(dim, sh);
+  setTimeout(() => $('#np').focus(), 50);
+}
+
+// scorrere a sinistra in anticamera: Tieni e Scarta
+let sw = null, swipeMoved = false;
+function closeSwipes(except) { $$('.it.open').forEach(x => { if (x !== except) { x.classList.remove('open'); x.style.transform = ''; setTimeout(() => x.parentNode.classList.remove('sw'), 220); } }); }
+document.addEventListener('touchstart', e => { const it = e.target.closest('.it'); swipeMoved = false;
+  if (!it || it.classList.contains('decided') || !it.parentNode.querySelector('.behind')) { if (!e.target.closest('.behind')) closeSwipes(); return; }
+  sw = {it, x: e.touches[0].clientX, y: e.touches[0].clientY, base: it.classList.contains('open') ? -148 : 0, dx: 0, lock: null}; closeSwipes(it); }, {passive: true});
+document.addEventListener('touchmove', e => { if (!sw) return; const dx = e.touches[0].clientX - sw.x, dy = e.touches[0].clientY - sw.y;
+  if (sw.lock == null && (Math.abs(dx) > 8 || Math.abs(dy) > 8)) sw.lock = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y';
+  if (sw.lock !== 'x') return; swipeMoved = true; sw.dx = dx; sw.it.classList.add('drag'); sw.it.parentNode.classList.add('sw');
+  sw.it.style.transform = `translateX(${Math.min(0, Math.max(-170, sw.base + dx))}px)`; }, {passive: true});
+document.addEventListener('touchend', () => { if (!sw) return; const it = sw.it; it.classList.remove('drag');
+  if (sw.lock === 'x') { const open = sw.base + sw.dx < -70; it.classList.toggle('open', open); it.style.transform = open ? 'translateX(-148px)' : ''; if (!open) setTimeout(() => it.parentNode.classList.remove('sw'), 220); }
+  sw = null; setTimeout(() => { swipeMoved = false; }, 50); });
+
+/* ---------- avvio ---------- */
+addEventListener('hashchange', () => render());
+let renderT = null;
+WM.on(() => { clearTimeout(renderT); renderT = setTimeout(() => { if (!document.querySelector('.sheet') && !(document.activeElement && /^(commento|q)$/.test(document.activeElement.id))) render(true); }, 60); });
+WM.start(e => {
+  app.innerHTML = `<div class="err"><img src="${SEAL}" alt="" style="width:90px;margin:0 auto 10px;transform:rotate(-8deg)"><h1>${e.code === 'auth' ? 'GitHub non accetta la chiave' : 'GitHub non risponde'}</h1>
+    <p class="muted">${e.code === 'auth' ? 'Forse è scaduta o non ha più accesso al repository dei dati.' : 'Controlla la connessione e riprova.'}</p>
+    <p><button class="pill k" onclick="${e.code === 'auth' ? 'WM.forget();' : ''}location.reload()">${e.code === 'auth' ? 'Sblocca di nuovo' : 'Riprova'}</button></p></div>`;
+}).then(ok => { if (ok) render(); });
+</script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(() => {});</script>
+</body>
+</html>
