@@ -62,6 +62,8 @@ img{display:block}
 .bar img{width:34px;height:34px;transform:rotate(-6deg)}
 .bar .mast{flex:1;font:400 30px var(--serif);letter-spacing:-.01em}
 .bar .meta{font:500 10px/1.3 var(--sans);letter-spacing:.1em;text-transform:uppercase;text-align:right;color:var(--muted)}
+.edn{display:flex;justify-content:space-between;gap:12px;padding:9px 18px;border-bottom:1px solid var(--rule);font:500 11px var(--sans);letter-spacing:.08em;text-transform:uppercase}
+.edn a{text-decoration:none;color:var(--muted);padding:4px 0}.edn a.r{margin-left:auto;text-align:right}
 .kick{padding:12px 18px 13px;font:500 12px var(--sans);letter-spacing:.06em;color:var(--red);text-transform:uppercase}
 .hero .img{aspect-ratio:4/3.5;margin-bottom:15px}
 .hero .tx{padding:0 18px;position:relative}
@@ -307,8 +309,8 @@ window.WM = (() => {
   }
 
   /* ---------- stato ---------- */
-  // st: indice (schede), testi, edizione (l'ultima), decisioni (id -> decisione già su GitHub), cantieri (+sha)
-  let st = {indice: {schede: {}}, testi: {}, edizione: null, decisioni: {}, cantieri: {}, cantSha: null, pulled: 0};
+  // st: indice (schede), testi, edizione (l'ultima), edizioni (data -> sha di tutte), decisioni (id -> decisione già su GitHub), cantieri (+sha)
+  let st = {indice: {schede: {}}, testi: {}, edizione: null, edizioni: {}, decisioni: {}, cantieri: {}, cantSha: null, pulled: 0};
   let outbox = []; // decisioni non ancora partite: {id, d, after}
   const listeners = new Set();
   const emit = () => listeners.forEach(f => { try { f(); } catch (e) { console.error(e); } });
@@ -326,7 +328,8 @@ window.WM = (() => {
       if (!c || c.stato !== 'anticamera') continue;
       decisioni[id] = (st.decisioni[id] && st.decisioni[id]._sha === f.sha) ? st.decisioni[id] : Object.assign(await rawJson('decisioni/' + f.name, {}), {_sha: f.sha});
     }
-    st = Object.assign(st, {indice, testi, edizione, decisioni, cantieri: (cant.data && cant.data.cantieri) || {}, cantSha: cant.sha, pulled: Date.now()});
+    const edizioni = {}; for (const f of eds) edizioni[f.name.slice(0, -5)] = f.sha;
+    st = Object.assign(st, {indice, testi, edizione, edizioni, decisioni, cantieri: (cant.data && cant.data.cantieri) || {}, cantSha: cant.sha, pulled: Date.now()});
     await set('st', st);
     emit();
   }
@@ -386,6 +389,23 @@ window.WM = (() => {
     }
   }
   const pendingCant = new Map();
+
+  /* ---------- edizioni passate: caricate quando le apri, con copia locale ---------- */
+  const eds = {}, edLoading = {};
+  function edizione(data) { // subito, se c'è; altrimenti null e la carica (poi emit)
+    if (st.edizione && st.edizione.data === data) return st.edizione;
+    const sha = (st.edizioni || {})[data], e = eds[data];
+    if (e && (!sha || e._sha === sha)) return e;
+    if (!edLoading[data]) edLoading[data] = (async () => {
+      let x = await get('ed:' + data);
+      if (!x || (sha && x._sha !== sha)) {
+        try { x = Object.assign(await rawJson('edizioni/' + data + '.json', null) || {}, {_sha: sha}); set('ed:' + data, x); }
+        catch (err) { x = x || {_err: err.code || 'net'}; }
+      }
+      eds[data] = x; delete edLoading[data]; emit();
+    })();
+    return e || null;
+  }
 
   /* ---------- immagini e note, con copia locale ---------- */
   const urls = {};
@@ -447,7 +467,7 @@ window.WM = (() => {
   function forget() { localStorage.removeItem(CFG_KEY); }
 
   return {CFG_KEY, start, pull, on: f => (listeners.add(f), () => listeners.delete(f)), get state() { return st; },
-    decide, undo, decisione, saveCantiere, img, note, forget, UNDO_MS};
+    decide, undo, decisione, saveCantiere, edizione, img, note, forget, UNDO_MS};
 })();
 </script>
 <script>
@@ -785,8 +805,11 @@ function decidedBlock(c, d) {
     ${d.pending ? `<p class="muted" style="font-size:13px;margin:4px 0 10px">Parte fra pochi secondi. <button type="button" data-undo="${c.id}" style="text-decoration:underline">Annulla</button></p>` : ''}</div>`;
 }
 
-function viewEdizione() {
-  const ed = S().edizione;
+function viewEdizione(data) {
+  const last = S().edizione, past = data && (!last || data !== last.data);
+  const ed = past ? WM.edizione(data) : last;
+  if (past && !ed) return `${barHtml({data})}${edNav(data)}<div class="empty">Apro l'edizione…</div>`;
+  if (past && !ed.data) return `${barHtml({data})}${edNav(data)}<div class="empty"><b>Non riesco ad aprirla</b>${ed._err === 'offline' ? 'Serve la rete la prima volta.' : 'Questa edizione non c\'è.'}</div>`;
   if (!ed || !ed.data) return `${barHtml()}<div class="empty"><b>La prima edizione arriva domattina</b>Alle 7 WiseMan mette insieme quello che hai mandato su Telegram. Intanto trovi tutto nell'Anticamera.</div>`;
   const ids = [...(ed.nuovi || [])].filter(card);
   const again = (ed.riproposte || []).filter(card);
@@ -796,12 +819,23 @@ function viewEdizione() {
     .sort((a, b) => (PRI[a.consiglio] ?? 2) - (PRI[b.consiglio] ?? 2) || b.arrivo.localeCompare(a.arrivo));
   const duo = rest.filter(c => c.img).slice(0, 2), brevi = rest.filter(c => !duo.includes(c));
   const k = pending().length;
-  return `${barHtml(ed)}
+  return `${barHtml(ed)}${edNav(ed.data)}
     <div class="kick">${ids.length} ${ids.length === 1 ? 'contenuto nuovo' : 'contenuti nuovi'} · ${k} da decidere</div>
     ${open ? hero(open, ed) : ''}
     ${duo.length ? `<div class="duo">${duo.map(c => `<a href="#pezzo/${c.id}" style="text-decoration:none">${pic(c)}<div class="src">${esc(AREE[c.area] || '')} · ${esc(c.tipo)}</div><h3>${esc(c.titolo)}</h3>${stateMark(c)}</a>`).join('')}</div>` : ''}
     ${brevi.length ? `<section class="brevi"><h4>In breve</h4>${brevi.map(c => `<a class="row" href="#pezzo/${c.id}" style="text-decoration:none">${pic(c, 't img')}<div><div class="src">${srcLine(c)}</div><h3>${esc(c.titolo)}</h3>${again.includes(c.id) ? '<div class="note">Ancora in anticamera: te la ripropongo una volta</div>' : ''}${stateMark(c)}</div></a>`).join('')}</section>` : ''}
     <div class="vow"><img src="${SEAL}" alt="">Niente entra nel Second Brain senza il tuo sì.</div>`;
+}
+// frecce fra le edizioni: la precedente e la successiva (o Oggi)
+function edNav(data) {
+  const all = Object.keys(S().edizioni || {}).sort(), last = S().edizione && S().edizione.data;
+  if (last && !all.includes(last)) all.push(last);
+  const i = all.indexOf(data);
+  const prev = i > 0 ? all[i - 1] : (i < 0 ? all.filter(x => x < data).pop() : null);
+  const next = i >= 0 ? all[i + 1] : all.find(x => x > data);
+  if (!prev && !next) return '';
+  const day = x => { if (x === today()) return 'Oggi'; if (x === addDays(today(), -1)) return 'Ieri'; const d = new Date(x + 'T12:00:00'); return `${GG[d.getDay()]} ${d.getDate()} ${MM[d.getMonth()]}`; };
+  return `<nav class="edn">${prev ? `<a href="#edizione/${prev}">‹ ${day(prev)}</a>` : ''}${next ? `<a class="r" href="${next === last ? '#edizione' : '#edizione/' + next}">${day(next)} ›</a>` : ''}</nav>`;
 }
 function stateMark(c) {
   const d = WM.decisione(c.id); if (!d) return '';
@@ -963,7 +997,7 @@ function render(keepScroll) {
   $$('.decbar').forEach(x => x.remove());
   let html;
   if (r.name === 'pezzo') html = viewPezzo(r.id, r.seq);
-  else html = ({edizione: viewEdizione, anticamera: viewAnticamera, cantieri: viewCantieri, contesto: viewContesto, archivio: viewArchivio}[r.name] || viewEdizione)();
+  else html = ({edizione: () => viewEdizione(r.id), anticamera: viewAnticamera, cantieri: viewCantieri, contesto: viewContesto, archivio: viewArchivio}[r.name] || viewEdizione)();
   const typing = document.activeElement && document.activeElement.id === 'q';
   if (typing && r.name === 'archivio') { const box = $('#arows'); if (box) { box.outerHTML = `<div id="arows">${archRows(cards().map(c => [c, WM.decisione(c.id)]))}</div>`; } }
   app.innerHTML = `<div class="scr">${html}</div>`;
