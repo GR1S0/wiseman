@@ -999,6 +999,7 @@ const archRows = rows => rows.length ? rows.map(([c, d]) => `<button type="butto
 /* ---------- router ---------- */
 const TABS = [['edizione', 'Edizione'], ['anticamera', 'Anticamera'], ['cantieri', 'Cantieri'], ['contesto', 'Contesto'], ['archivio', 'Archivio']];
 let lastRoute = '';
+let origin = '';  // l'ultima schermata che non è una scheda: dove riporta «Indietro»
 function route() {
   const h = (location.hash || '#edizione').slice(1);
   const [name, rest] = h.split('/');
@@ -1009,6 +1010,9 @@ function render(keepScroll) {
   const r = route(), key = location.hash;
   const y = scrollY;
   $$('.decbar').forEach(x => x.remove());
+  // la scheda ricorda da dove ci sei arrivato (un'edizione passata, l'archivio...): resta scritto sulla sua voce di cronologia
+  if (r.name !== 'pezzo') origin = key || '#edizione';
+  else if (origin && !(history.state && history.state.from)) history.replaceState({from: origin}, '');
   let html;
   if (r.name === 'pezzo') html = viewPezzo(r.id, r.seq);
   else html = ({edizione: () => viewEdizione(r.id), anticamera: viewAnticamera, cantieri: viewCantieri, contesto: viewContesto, archivio: viewArchivio}[r.name] || viewEdizione)();
@@ -1051,8 +1055,7 @@ document.addEventListener('click', e => {
   const ar = t.closest('[data-area]'); if (ar) { archArea = ar.dataset.area; render(true); return; }
   if (t.closest('[data-drop]')) { archDrop = !archDrop; render(true); return; }
   const go = t.closest('[data-go]');
-  if (go && !t.closest('a') && !swipeMoved) { history.replaceState({from: location.hash}, ''); location.hash = go.dataset.go; }
-  const a = t.closest('a[href^="#pezzo"]'); if (a) history.replaceState({from: location.hash}, '');
+  if (go && !t.closest('a') && !swipeMoved) location.hash = go.dataset.go;
 });
 document.addEventListener('input', e => { if (e.target.id === 'q') { archQ = e.target.value; const box = $('#arows');
   const all = cards().map(c => [c, WM.decisione(c.id)]).filter(([c, d]) => d && (archDrop ? d.decisione === 'scarta' : d.decisione !== 'scarta'));
