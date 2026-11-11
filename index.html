@@ -57,6 +57,15 @@ img{display:block}
 .tabs a.on::before{content:"";position:absolute;top:-1px;left:22%;right:22%;height:3px;background:var(--red)}
 .tabs b{font:500 10px var(--sans);background:var(--red);color:var(--paper);border-radius:9px;padding:1px 5px 2px;margin-left:3px;vertical-align:1px}
 
+/* legenda delle quattro scelte: solo quando c'è margine di fianco alla colonna */
+.leg{display:none}
+@media(min-width:1140px){.leg:not([hidden]){display:block;position:fixed;top:calc(96px + var(--top));left:calc(50% + 320px);width:230px;z-index:4}}
+.leg .lab{padding-bottom:9px;border-bottom:1px solid var(--ink)}
+.leg dl{margin:0}
+.leg dt{font:400 21px/1.1 var(--serif);margin:13px 0 3px}
+.leg dd{margin:0;padding-bottom:13px;border-bottom:1px solid var(--rule);font:350 13px/1.4 var(--sans);color:var(--muted)}
+.leg p{margin:12px 0 0;font:350 12px/1.4 var(--sans);color:var(--red)}
+
 /* edizione */
 .bar{display:flex;align-items:center;gap:10px;padding:14px 18px 12px;border-bottom:1px solid var(--ink)}
 .bar img{width:34px;height:34px;transform:rotate(-6deg)}
@@ -243,6 +252,7 @@ img{display:block}
 <body>
 <div id="app"></div>
 <nav class="tabs" id="tabs" hidden><div></div></nav>
+<aside class="leg" id="leg" hidden></aside>
 <script>
 // WiseMan: i dati stanno nel repository privato GR1S0/wiseman-data, letto e scritto con l'API di GitHub.
 // Il Mac scrive indice.json, testi.json, schede/, img/, edizioni/. L'app scrive solo decisioni/<id>.json (un file
@@ -645,6 +655,10 @@ const AREE = {marketing: 'Marketing', sales: 'Sales', content: 'Content', storyt
 const REGIONI = {content: ['Contenuti', 84, 84], storytelling: ['Racconto', 182, 56], marketing: ['Marketing', 284, 86],
   varie: ['Mente', 178, 180], fitness: ['Corpo', 76, 264], sales: ['Vendite', 284, 262]};
 const DEC = {costruisci: 'Costruisci', contesto: 'Contesto', tieni: 'Tieni', scarta: 'Scarta'};
+const COSA = {costruisci: 'Vale un\'azione adesso. Entra in un cantiere, con un primo passo e una data in cui ne riparliamo.',
+  contesto: 'Niente da fare: ti aiuta a capire il territorio in cui ti muovi. La ritrovi segnata sulla mappa del Contesto.',
+  tieni: 'Un riferimento da conservare. Entra nel Second Brain e resta nell\'Archivio.',
+  scarta: 'Debole, generico, un pitch o una cosa che sai già. Non entra nel Second Brain: finisce tra le Scartate dell\'Archivio.'};
 const GG = ['Dom', 'Lun', 'Mar', 'Mer', 'Gio', 'Ven', 'Sab'], MM = ['gen', 'feb', 'mar', 'apr', 'mag', 'giu', 'lug', 'ago', 'set', 'ott', 'nov', 'dic'];
 const MESI = ['gennaio', 'febbraio', 'marzo', 'aprile', 'maggio', 'giugno', 'luglio', 'agosto', 'settembre', 'ottobre', 'novembre', 'dicembre'];
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
@@ -1004,6 +1018,11 @@ function render(keepScroll) {
   if (r.name === 'pezzo') {
     const c = card(r.id);
     if (c && !WM.decisione(c.id)) { document.body.insertAdjacentHTML('beforeend', decBar(c)); $('.scr').classList.add('dec-open'); }
+  }
+  const leg = $('#leg');
+  if (leg.hidden) {
+    leg.innerHTML = `<div class="lab">Le quattro scelte</div><dl>${Object.entries(DEC).map(([k, l]) => `<dt>${l}</dt><dd>${COSA[k]}</dd>`).join('')}</dl><p>In rosso, quella che ti consiglia WiseMan.</p>`;
+    leg.hidden = false;
   }
   const tabs = $('#tabs');
   tabs.hidden = r.name === 'pezzo';
